@@ -17,7 +17,7 @@ import "./interfaces/IDistributor.sol";
 
  */
 
-contract MultiFeeDistributionvV2 is IMultiFeeDistribution, Ownable {
+contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   using SafeMath for uint;
   using SafeERC20 for IERC20;
 
@@ -40,7 +40,6 @@ contract MultiFeeDistributionvV2 is IMultiFeeDistribution, Ownable {
     uint earned; // balance reward tokens earned
   }
   struct LockedBalance {
-    address distributor;
     uint amount;
     uint unlockTime;
   }
@@ -89,11 +88,11 @@ contract MultiFeeDistributionvV2 is IMultiFeeDistribution, Ownable {
     rewardTokenVault = _rewardTokenVault;
     rewardTokens.push(_rewardToken);
     rewardData[_rewardToken].lastUpdateTime = block.timestamp;
+    rewardData[_rewardToken].periodFinish = block.timestamp;
     distributor = _distributor;
   }
 
   function setTeamRewardVault(address vault) external onlyOwner {
-    require(vault != address(0), "address zero");
     teamRewardVault = vault;
   }
 
@@ -135,39 +134,21 @@ contract MultiFeeDistributionvV2 is IMultiFeeDistribution, Ownable {
     uint locked,
     LockedBalance[] memory lockData
   ) {
-    (uint distTotal, uint distUnlockable, uint distLocked, IDistributor.LockedBalance[] memory distLockData) = distributor.lockedBalances(user);
     LockedBalance[] storage locks = userLocks[user];
     uint idx;
-    LockedBalance[] memory _lockData;
     for (uint i = 0; i < locks.length; i++) {
       if (locks[i].unlockTime > block.timestamp) {
         if (idx == 0) {
-          _lockData = new LockedBalance[](locks.length - i);
+          lockData = new LockedBalance[](locks.length - i);
         }
-        _lockData[idx] = locks[i];
+        lockData[idx] = locks[i];
         idx++;
         locked = locked.add(locks[i].amount);
       } else {
         unlockable = unlockable.add(locks[i].amount);
       }
     }
-
-    total = balances[user].locked.add(distTotal);
-    unlockable = unlockable.add(distUnlockable);
-    locked = locked.add(distLocked);
-
-    lockData = new LockedBalance[](_lockData.length + distLockData.length);
-    if (_lockData.length > 0) {
-      for (uint i = 0; i < _lockData.length; i++) {
-        lockData[i] = _lockData[i];
-      }
-    }
-    if (distLockData.length > 0) {
-      for (uint i = _lockData.length; i < _lockData.length + distLockData.length; i++) {
-        uint _idx = i - _lockData.length;
-        lockData[i] = LockedBalance(address(distributor), distLockData[_idx].amount, distLockData[_idx].unlockTime) ;
-      }
-    }
+    return (balances[user].locked, unlockable, locked, lockData);
   }
 
   // Information on the "earned" balances of a user
@@ -210,12 +191,22 @@ contract MultiFeeDistributionvV2 is IMultiFeeDistribution, Ownable {
     // return (amount, penaltyAmount);
   }
 
+  function totalLockedBalance(address user) public view returns (uint) {
+    (,, uint distLocked,) = distributor.lockedBalances(user);
+    return balances[user].locked.add(distLocked);
+  }
+
+  function totalLockedSupply() public view returns (uint) {
+    return lockedSupply.add(distributor.lockedSupply());
+  }
+
   // Address and claimable amount of all reward tokens for the given account
   function claimableRewards(address account) external view returns (RewardData[] memory rewards) {
     rewards = new RewardData[](rewardTokens.length);
     for (uint i = 0; i < rewards.length; i++) {
       rewards[i].token = rewardTokens[i];
-      rewards[i].amount = _earned(account, rewards[i].token, balances[account].locked, _rewardPerToken(rewardTokens[i], lockedSupply)).div(1e12);
+      // rewards[i].amount = _earned(account, rewards[i].token, balances[account].locked, _rewardPerToken(rewardTokens[i], lockedSupply)).div(1e12);
+      rewards[i].amount = _earned(account, rewards[i].token, totalLockedBalance(account), _rewardPerToken(rewardTokens[i], totalLockedSupply())).div(1e12);
     }
     return rewards;
   }
@@ -231,7 +222,7 @@ contract MultiFeeDistributionvV2 is IMultiFeeDistribution, Ownable {
     uint unlockTime = block.timestamp.div(rewardsDuration).mul(rewardsDuration).add(lockDuration);
     uint idx = userLocks[onBehalfOf].length;
     if (idx == 0 || userLocks[onBehalfOf][idx-1].unlockTime < unlockTime) {
-      userLocks[onBehalfOf].push(LockedBalance({ distributor: address(this), amount: amount, unlockTime: unlockTime}));
+      userLocks[onBehalfOf].push(LockedBalance({ amount: amount, unlockTime: unlockTime}));
     } else {
       userLocks[onBehalfOf][idx-1].amount = userLocks[onBehalfOf][idx-1].amount.add(amount);
     }
@@ -259,7 +250,7 @@ contract MultiFeeDistributionvV2 is IMultiFeeDistribution, Ownable {
         delete locks[i];
       }
     }
-    require(amount > 0, 'amount = 0');
+    require(amount > 0, "amount = 0");
     bal.locked = bal.locked.sub(amount);
     lockedSupply = lockedSupply.sub(amount);
     stakingToken.safeTransfer(msg.sender, amount);
@@ -285,7 +276,7 @@ contract MultiFeeDistributionvV2 is IMultiFeeDistribution, Ownable {
     LockedBalance[] storage earnings = userEarnings[user];
     uint idx = earnings.length;
     if (idx == 0 || earnings[idx-1].unlockTime < unlockTime) {
-      earnings.push(LockedBalance({ distributor: address(this), amount: amount, unlockTime: unlockTime}));
+      earnings.push(LockedBalance({ amount: amount, unlockTime: unlockTime}));
     } else {
       earnings[idx-1].amount = earnings[idx-1].amount.add(amount);
     }
@@ -423,11 +414,13 @@ contract MultiFeeDistributionvV2 is IMultiFeeDistribution, Ownable {
     for (uint i = 0; i < length; i++) {
       address token = rewardTokens[i];
       Reward storage r = rewardData[token];
-      uint rpt = _rewardPerToken(token, lockedSupply);
+      // uint rpt = _rewardPerToken(token, lockedSupply);
+      uint rpt = _rewardPerToken(token, totalLockedSupply());
       r.rewardPerTokenStored = rpt;
       r.lastUpdateTime = lastTimeRewardApplicable(token);
       if (account != address(this)) {
-        rewards[account][token] = _earned(account, token, balances[account].locked, rpt);
+        // rewards[account][token] = _earned(account, token, balances[account].locked, rpt);
+        rewards[account][token] = _earned(account, token, totalLockedBalance(account), rpt);
         userRewardPerTokenPaid[account][token] = rpt;
       }
     }

@@ -6,6 +6,7 @@ interface IDistributor {
     uint amount;
     uint unlockTime;
   }
+  function lockedSupply() external view returns (uint);
   function lockedBalances(address user) view external returns (uint total, uint unlockable, uint locked, LockedBalance[] memory lockData);
   
 }
