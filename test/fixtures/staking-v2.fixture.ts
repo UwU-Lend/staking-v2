@@ -13,6 +13,7 @@ export type StakingV2FixtureResult = {
   rewardTokenHolder: SignerWithAddress;
   rewardTokenVaultAddress: string;
   uToken: IERC20;
+  incentivesController: Contract;
 }
 
 export const stakingV2Fixture = async (): Promise<StakingV2FixtureResult> => {
@@ -37,8 +38,13 @@ export const stakingV2Fixture = async (): Promise<StakingV2FixtureResult> => {
   const DistributorV2 = await ethers.getContractFactory('MultiFeeDistributionV2');
   const distributorV2 = await DistributorV2.deploy(stakingTokenAddress, rewardTokenAddress, rewardTokenVaultAddress, distributorV1.address);
 
+  const IncentivesController = await ethers.getContractFactory('IncentivesControllerMock');
+  const incentivesController = await IncentivesController.deploy();
+
+  await distributorV2.setIncentivesController(incentivesController.address);
+
   const UToken = await ethers.getContractFactory('UTokenMock');
   const uToken = await UToken.deploy(ethers.utils.parseEther("1000000")) as IERC20;
 
-  return { distributorV1, distributorV2, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder, rewardTokenVaultAddress, uToken };
+  return { distributorV1, distributorV2, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder, rewardTokenVaultAddress, uToken, incentivesController };
 }
