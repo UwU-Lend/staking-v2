@@ -6,9 +6,18 @@ import { ethers } from "hardhat";
 import { expect } from "chai";
 import { stakingV2Fixture } from "./fixtures/staking-v2.fixture";
 
-const getCalcAmount = (treasuryAmount: BigNumber, locked: BigNumber, totalLocked: BigNumber) => {
+const getCalcAmount = (treasuryAmount: BigNumber, locked: BigNumber, totalLocked: BigNumber): BigNumber => {
   const ration = locked.mul(BigNumber.from('1000000000000000000000000000000000000')).div(totalLocked);
   return treasuryAmount.mul(ration).div(BigNumber.from('1000000000000000000000000000000000000'));
+}
+type AdjustRewardResult = {
+  adjustedAmount: BigNumber,
+  feeAmount: BigNumber,
+}
+const adjustReward = (rewardAmount: BigNumber, teamRewardFee: BigNumber): AdjustRewardResult => {
+  const feeAmount = rewardAmount.mul(teamRewardFee).div(10000);
+  const adjustedAmount = rewardAmount.sub(feeAmount);
+  return { adjustedAmount, feeAmount };
 }
 
 describe("MultiFeeDistributionV2", () => {
@@ -17,6 +26,11 @@ describe("MultiFeeDistributionV2", () => {
       const { distributorV1, distributorV2 } = await loadFixture(stakingV2Fixture);
       const distributorAddress: string = await distributorV2.distributor();
       expect(distributorAddress).to.be.equals(distributorV1.address);
+    });
+    it("Sould be the right set team fee", async () => {
+      const { distributorV2 } = await loadFixture(stakingV2Fixture);
+      const teamRewardFee: string = await distributorV2.teamRewardFee();
+      expect(teamRewardFee).to.be.equals(2000);
     });
   });
   describe("LockedBalances", () => {
@@ -411,30 +425,53 @@ describe("MultiFeeDistributionV2", () => {
       expect(await rewardToken.balanceOf(user2.address)).to.be.equals(mintAmountInWei2);
     });
   });
-  // describe("Cash gap related with teame fee", () => {
-  //   it("", async () => {
-  //     const [, user, user2, teameFeeVault] = await ethers.getSigners();
-  //     const { distributorV1, distributorV2, uToken, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder } = await loadFixture(stakingV2Fixture);
-
-  //     const lockAmountInWei1 = ethers.utils.parseEther("100");
-  //     const lockAmountInWei2 = ethers.utils.parseEther("200");
-  //     await stakingToken.connect(stakingTokenHolder).transfer(user.address, lockAmountInWei1);
-  //     await stakingToken.connect(stakingTokenHolder).transfer(user2.address, lockAmountInWei2);
-  //     await stakingToken.connect(user).approve(distributorV1.address, lockAmountInWei1);
-  //     await distributorV1.connect(user).lock(lockAmountInWei1, user.address);
-  //     await stakingToken.connect(user2).approve(distributorV2.address, lockAmountInWei2);
-  //     await distributorV2.connect(user2).lock(lockAmountInWei2, user2.address);
-  //     const totalLockedSupply = await distributorV2.totalLockedSupply();
-  //     await distributorV2.addReward(uToken.address);
-  //     const rewardTreasuryAmountInWei = ethers.utils.parseEther("1000");
-  //     const utokenTreasuryAmountInWei = ethers.utils.parseEther("2000");
-  //     await uToken.transfer(distributorV2.address, utokenTreasuryAmountInWei);
-  //     await rewardToken.connect(rewardTokenHolder).transfer(distributorV2.address, rewardTreasuryAmountInWei);
-
-  //     await distributorV2.getReward([rewardToken.address, uToken.address]);
-  //     await time.increase(86400 * 7);
-  //     await distributorV2.connect(user).getReward([rewardToken.address, uToken.address]);
-  //     await distributorV2.connect(user2).getReward([rewardToken.address, uToken.address]);
-  //   });
-  // });
+  describe("Cash gap related with teame fee", () => {
+    it("", async () => {
+      const [, user, user2, teameFeeVault] = await ethers.getSigners();
+      const { distributorV1, distributorV2, uToken, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder } = await loadFixture(stakingV2Fixture);
+      await distributorV2.setTeamRewardVault(teameFeeVault.address);
+      await distributorV2.setTeamRewardFee(5000);
+      const lockAmountInWei1 = ethers.utils.parseEther("100");
+      const lockAmountInWei2 = ethers.utils.parseEther("200");
+      await stakingToken.connect(stakingTokenHolder).transfer(user.address, lockAmountInWei1);
+      await stakingToken.connect(stakingTokenHolder).transfer(user2.address, lockAmountInWei2);
+      await stakingToken.connect(user).approve(distributorV1.address, lockAmountInWei1);
+      await distributorV1.connect(user).lock(lockAmountInWei1, user.address);
+      await stakingToken.connect(user2).approve(distributorV2.address, lockAmountInWei2);
+      await distributorV2.connect(user2).lock(lockAmountInWei2, user2.address);
+      const totalLockedSupply = await distributorV2.totalLockedSupply();
+      await distributorV2.addReward(uToken.address);
+      const utokenTreasuryAmountInWei1 = ethers.utils.parseEther("1000");
+      const utokenTreasuryAmountInWei2 = ethers.utils.parseEther("2000");
+      const utokenTreasuryAmountInWei3 = ethers.utils.parseEther("3000");
+      await uToken.transfer(distributorV2.address, utokenTreasuryAmountInWei1);
+      await distributorV2.getReward([uToken.address]);
+      await time.increase(86400 * 7);
+      await uToken.transfer(distributorV2.address, utokenTreasuryAmountInWei2);
+      await distributorV2.connect(user).getReward([uToken.address]);
+      await distributorV2.connect(user2).getReward([uToken.address]);
+      await time.increase(86400 * 7);
+      await uToken.transfer(distributorV2.address, utokenTreasuryAmountInWei3);
+      await distributorV2.connect(user).getReward([uToken.address]);
+      await distributorV2.connect(user2).getReward([uToken.address]);
+      await time.increase(86400 * 7);
+      await distributorV2.connect(user).getReward([uToken.address]);
+      await distributorV2.connect(user2).getReward([uToken.address]);
+      await time.increase(86400 * 7);
+      await distributorV2.connect(user).getReward([uToken.address]);
+      await distributorV2.connect(user2).getReward([uToken.address]);
+      const teamRewardFee: BigNumber = await distributorV2.teamRewardFee();
+      const { adjustedAmount, feeAmount }: AdjustRewardResult = adjustReward(utokenTreasuryAmountInWei1.add(utokenTreasuryAmountInWei2).add(utokenTreasuryAmountInWei3), teamRewardFee);
+      const calcAmount1 = getCalcAmount(adjustedAmount, lockAmountInWei1, totalLockedSupply);
+      const calcAmount2 = getCalcAmount(adjustedAmount, lockAmountInWei2, totalLockedSupply);
+      const balance1 = await uToken.balanceOf(user.address);
+      const balance2 = await uToken.balanceOf(user2.address);
+      const teameFeeVaultBalance = await uToken.balanceOf(teameFeeVault.address);
+      expect(calcAmount1.sub(balance1)).to.be.lte(1);
+      expect(calcAmount1.sub(balance1)).to.be.gte(0);
+      expect(calcAmount2.sub(balance2)).to.be.lte(1);
+      expect(calcAmount2.sub(balance2)).to.be.gte(0);
+      expect(teameFeeVaultBalance).to.be.equals(feeAmount);
+    });
+  });
 });
