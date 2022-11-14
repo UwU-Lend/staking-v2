@@ -1,10 +1,9 @@
 import { loadFixture, time } from "@nomicfoundation/hardhat-network-helpers";
 
 import { BigNumber } from "ethers";
-import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
+import { MultiFeeDistributionV2Fixture } from "./fixtures/multi-fee-distribution-v2.fixture";
 import { ethers } from "hardhat";
 import { expect } from "chai";
-import { stakingV2Fixture } from "./fixtures/staking-v2.fixture";
 
 const getCalcAmount = (treasuryAmount: BigNumber, locked: BigNumber, totalLocked: BigNumber): BigNumber => {
   const ration = locked.mul(BigNumber.from('1000000000000000000000000000000000000')).div(totalLocked);
@@ -23,12 +22,12 @@ const adjustReward = (rewardAmount: BigNumber, teamRewardFee: BigNumber): Adjust
 describe("MultiFeeDistributionV2", () => {
   describe("Deployment", () => {
     it("Should be the right set distributor", async () => {
-      const { distributorV1, distributorV2 } = await loadFixture(stakingV2Fixture);
+      const { distributorV1, distributorV2 } = await loadFixture(MultiFeeDistributionV2Fixture);
       const distributorAddress: string = await distributorV2.distributor();
       expect(distributorAddress).to.be.equals(distributorV1.address);
     });
     it("Sould be the right set team fee", async () => {
-      const { distributorV2 } = await loadFixture(stakingV2Fixture);
+      const { distributorV2 } = await loadFixture(MultiFeeDistributionV2Fixture);
       const teamRewardFee: string = await distributorV2.teamRewardFee();
       expect(teamRewardFee).to.be.equals(2000);
     });
@@ -36,7 +35,7 @@ describe("MultiFeeDistributionV2", () => {
   describe("LockedBalances", () => {
     it("Should be the right set locked tokens amount", async () => {
       const [, user, user2] = await ethers.getSigners();
-      const { distributorV2, stakingToken, stakingTokenHolder } = await loadFixture(stakingV2Fixture);
+      const { distributorV2, stakingToken, stakingTokenHolder } = await loadFixture(MultiFeeDistributionV2Fixture);
       const lockAmountInWei1_1 = ethers.utils.parseEther("100");
       const lockAmountInWei1_2 = ethers.utils.parseEther("200");
       const lockAmountInWei2_1 = ethers.utils.parseEther("300");
@@ -70,7 +69,7 @@ describe("MultiFeeDistributionV2", () => {
   describe("TotalLockedBalance", () => {
     it("Should be the right set total locked balance by user", async () => {
       const [, user, user2] = await ethers.getSigners();
-      const { distributorV1, distributorV2, stakingToken, stakingTokenHolder } = await loadFixture(stakingV2Fixture);
+      const { distributorV1, distributorV2, stakingToken, stakingTokenHolder } = await loadFixture(MultiFeeDistributionV2Fixture);
       const lockAmountInWei1_1 = ethers.utils.parseEther("100");
       const lockAmountInWei1_2 = ethers.utils.parseEther("200");
       const lockAmountInWei2_1 = ethers.utils.parseEther("300");
@@ -94,7 +93,7 @@ describe("MultiFeeDistributionV2", () => {
   describe("TotalLockedSupply", () => {
     it("Should be the right set total locked suppply", async () => {
       const [, user, user2] = await ethers.getSigners();
-      const { distributorV1, distributorV2, stakingToken, stakingTokenHolder } = await loadFixture(stakingV2Fixture);
+      const { distributorV1, distributorV2, stakingToken, stakingTokenHolder } = await loadFixture(MultiFeeDistributionV2Fixture);
       const lockAmountInWei1_1 = ethers.utils.parseEther("100");
       const lockAmountInWei1_2 = ethers.utils.parseEther("200");
       const lockAmountInWei2_1 = ethers.utils.parseEther("300");
@@ -118,7 +117,7 @@ describe("MultiFeeDistributionV2", () => {
     describe("All LP tokens locked only to v1", () => {
       it("Should be earned the right utoken amount", async () => {
         const [, user, user2] = await ethers.getSigners();
-        const { distributorV1, distributorV2, uToken, stakingToken, stakingTokenHolder } = await loadFixture(stakingV2Fixture);
+        const { distributorV1, distributorV2, uToken, stakingToken, stakingTokenHolder } = await loadFixture(MultiFeeDistributionV2Fixture);
         const lockAmountInWei1 = ethers.utils.parseEther("100");
         const lockAmountInWei2 = ethers.utils.parseEther("200");
         await stakingToken.connect(stakingTokenHolder).transfer(user.address, lockAmountInWei1);
@@ -144,7 +143,7 @@ describe("MultiFeeDistributionV2", () => {
       });
       it("Should be earned the right reward amount", async () => {
         const [, user, user2, incentivesControllerSigner] = await ethers.getSigners();
-        const { distributorV1, distributorV2, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder, rewardTokenVaultAddress } = await loadFixture(stakingV2Fixture);
+        const { distributorV1, distributorV2, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder, rewardTokenVaultAddress } = await loadFixture(MultiFeeDistributionV2Fixture);
         const lockAmountInWei1 = ethers.utils.parseEther("100");
         const lockAmountInWei2 = ethers.utils.parseEther("200");
         await stakingToken.connect(stakingTokenHolder).transfer(user.address, lockAmountInWei1);
@@ -174,7 +173,7 @@ describe("MultiFeeDistributionV2", () => {
     describe("All LP tokens locked only to v2", () => {
       it("Should be earned the right utoken amount", async () => {
         const [, user, user2] = await ethers.getSigners();
-        const { distributorV2, uToken, stakingToken, stakingTokenHolder } = await loadFixture(stakingV2Fixture);
+        const { distributorV2, uToken, stakingToken, stakingTokenHolder } = await loadFixture(MultiFeeDistributionV2Fixture);
         const lockAmountInWei1 = ethers.utils.parseEther("100");
         const lockAmountInWei2 = ethers.utils.parseEther("200");
         await stakingToken.connect(stakingTokenHolder).transfer(user.address, lockAmountInWei1);
@@ -201,7 +200,7 @@ describe("MultiFeeDistributionV2", () => {
 
       it("Should be earned the right reward amount", async () => {
         const [, user, user2, incentivesControllerSigner] = await ethers.getSigners();
-        const { distributorV2, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder, rewardTokenVaultAddress } = await loadFixture(stakingV2Fixture);
+        const { distributorV2, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder, rewardTokenVaultAddress } = await loadFixture(MultiFeeDistributionV2Fixture);
         const lockAmountInWei1 = ethers.utils.parseEther("100");
         const lockAmountInWei2 = ethers.utils.parseEther("200");
         await stakingToken.connect(stakingTokenHolder).transfer(user.address, lockAmountInWei1);
@@ -231,7 +230,7 @@ describe("MultiFeeDistributionV2", () => {
     describe("locked LP tokens divided between v1 and v2", () => {
       it("Should be earned the right utoken amount", async () => {
         const [, user, user2] = await ethers.getSigners();
-        const { distributorV1, distributorV2, uToken, stakingToken, stakingTokenHolder } = await loadFixture(stakingV2Fixture);
+        const { distributorV1, distributorV2, uToken, stakingToken, stakingTokenHolder } = await loadFixture(MultiFeeDistributionV2Fixture);
         const lockAmountInWei1_1 = ethers.utils.parseEther("100");
         const lockAmountInWei1_2 = ethers.utils.parseEther("200");
         const lockAmountInWei2_1 = ethers.utils.parseEther("300");
@@ -263,7 +262,7 @@ describe("MultiFeeDistributionV2", () => {
       });
       it("Should be earned the right reward amount", async () => {
         const [, user, user2, incentivesControllerSigner] = await ethers.getSigners();
-        const { distributorV1, distributorV2, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder, rewardTokenVaultAddress } = await loadFixture(stakingV2Fixture);
+        const { distributorV1, distributorV2, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder, rewardTokenVaultAddress } = await loadFixture(MultiFeeDistributionV2Fixture);
         const lockAmountInWei1_1 = ethers.utils.parseEther("100");
         const lockAmountInWei1_2 = ethers.utils.parseEther("200");
         const lockAmountInWei2_1 = ethers.utils.parseEther("300");
@@ -300,7 +299,7 @@ describe("MultiFeeDistributionV2", () => {
   describe("Start vesting -> withdraw", () => {
     it("Sould be the right reward token withdrawal", async () => {
       const [, user, user2, incentivesControllerSigner] = await ethers.getSigners();
-      const { distributorV2, rewardToken, rewardTokenVaultAddress } = await loadFixture(stakingV2Fixture);
+      const { distributorV2, rewardToken, rewardTokenVaultAddress } = await loadFixture(MultiFeeDistributionV2Fixture);
       await ethers.provider.send('hardhat_setBalance', [rewardTokenVaultAddress, ethers.utils.parseEther('1000').toHexString()]);
       const rewardTokenVaultSigner = await ethers.getImpersonatedSigner(rewardTokenVaultAddress);
       await distributorV2.setMinters([incentivesControllerSigner.address]);
@@ -321,7 +320,7 @@ describe("MultiFeeDistributionV2", () => {
   describe("Start vesting -> exit early", () => {
     it("Sould be the right reward token withdrawal (50% penalty)", async () => {
       const [, user, user2, incentivesController] = await ethers.getSigners();
-      const { distributorV2, rewardToken, rewardTokenVaultAddress } = await loadFixture(stakingV2Fixture);
+      const { distributorV2, rewardToken, rewardTokenVaultAddress } = await loadFixture(MultiFeeDistributionV2Fixture);
       await ethers.provider.send('hardhat_setBalance', [rewardTokenVaultAddress, ethers.utils.parseEther('1000').toHexString()]);
       const rewardTokenVaultSigner = await ethers.getImpersonatedSigner(rewardTokenVaultAddress);
       await distributorV2.setMinters([incentivesController.address]);
@@ -342,7 +341,7 @@ describe("MultiFeeDistributionV2", () => {
   describe("Start vesting -> exit early -> GetReward (50% penalty)", () => {
     it("Sould be the right token rewarded by exit early", async () => {
       const [, user, user2, incentivesController] = await ethers.getSigners();
-      const { distributorV2, rewardToken, rewardTokenVaultAddress, stakingToken, stakingTokenHolder } = await loadFixture(stakingV2Fixture);
+      const { distributorV2, rewardToken, rewardTokenVaultAddress, stakingToken, stakingTokenHolder } = await loadFixture(MultiFeeDistributionV2Fixture);
       await ethers.provider.send('hardhat_setBalance', [rewardTokenVaultAddress, ethers.utils.parseEther('1000').toHexString()]);
       const rewardTokenVaultSigner = await ethers.getImpersonatedSigner(rewardTokenVaultAddress);
       await distributorV2.setMinters([incentivesController.address]);
@@ -378,7 +377,7 @@ describe("MultiFeeDistributionV2", () => {
   describe("Start vesting -> withdraw -> exit early", () => {
     it("Should be the right receive reward token amount (exit early has no effect)", async () => {
       const [, user, user2, incentivesControllerSigner] = await ethers.getSigners();
-      const { distributorV2, rewardToken, rewardTokenVaultAddress } = await loadFixture(stakingV2Fixture);
+      const { distributorV2, rewardToken, rewardTokenVaultAddress } = await loadFixture(MultiFeeDistributionV2Fixture);
       await ethers.provider.send('hardhat_setBalance', [rewardTokenVaultAddress, ethers.utils.parseEther('1000').toHexString()]);
       const rewardTokenVaultSigner = await ethers.getImpersonatedSigner(rewardTokenVaultAddress);
       await distributorV2.setMinters([incentivesControllerSigner.address]);
@@ -401,7 +400,7 @@ describe("MultiFeeDistributionV2", () => {
   describe("vesting -> get reward", () => {
     it("Should be the right vesting and get reward has not effect", async () => {
       const [, user, user2, incentivesControllerSigner] = await ethers.getSigners();
-      const { distributorV2, rewardToken, rewardTokenVaultAddress } = await loadFixture(stakingV2Fixture);
+      const { distributorV2, rewardToken, rewardTokenVaultAddress } = await loadFixture(MultiFeeDistributionV2Fixture);
       await ethers.provider.send('hardhat_setBalance', [rewardTokenVaultAddress, ethers.utils.parseEther('1000').toHexString()]);
       const rewardTokenVaultSigner = await ethers.getImpersonatedSigner(rewardTokenVaultAddress);
       await distributorV2.setMinters([incentivesControllerSigner.address]);
@@ -428,7 +427,7 @@ describe("MultiFeeDistributionV2", () => {
   describe("Cash gap related with teame fee", () => {
     it("", async () => {
       const [, user, user2, teameFeeVault] = await ethers.getSigners();
-      const { distributorV1, distributorV2, uToken, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder } = await loadFixture(stakingV2Fixture);
+      const { distributorV1, distributorV2, uToken, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder } = await loadFixture(MultiFeeDistributionV2Fixture);
       await distributorV2.setTeamRewardVault(teameFeeVault.address);
       await distributorV2.setTeamRewardFee(5000);
       const lockAmountInWei1 = ethers.utils.parseEther("100");

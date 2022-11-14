@@ -4,7 +4,7 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import distributorABI from '../../abis/MultiFeeDistribution.json';
 import { ethers } from 'hardhat';
 
-export type StakingV2FixtureResult = {
+export type MultiFeeDistributionV2FixtureResult = {
   distributorV1: Contract;
   distributorV2: Contract;
   stakingToken: IERC20;
@@ -16,7 +16,7 @@ export type StakingV2FixtureResult = {
   incentivesController: Contract;
 }
 
-export const stakingV2Fixture = async (): Promise<StakingV2FixtureResult> => {
+export const MultiFeeDistributionV2Fixture = async (): Promise<MultiFeeDistributionV2FixtureResult> => {
   const distributorAddress = '0x7c0bF1108935e7105E218BBB4f670E5942c5e237';
   const incentivesControllerAddress = '0x21953192664867e19F85E96E1D1Dd79dc31cCcdB';
   const stakingTokenHolderAddress = '0x7c0bF1108935e7105E218BBB4f670E5942c5e237';
