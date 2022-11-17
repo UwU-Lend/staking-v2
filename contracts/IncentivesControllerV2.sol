@@ -286,12 +286,10 @@ contract IncentivesControllerV2 is Ownable {
   }
 
   function userInfo(address token, address user) public view returns (UserInfo memory) {
-    console.log('userInfo', userInitiated[token][user]);
     if (userInitiated[token][user]) {
       return _userInfo[token][user];
     } else {
       IChefIncentivesController.UserInfo memory info = incentivesController.userInfo(token, user);
-      console.log('userInfo:info', info.amount, info.rewardDebt);
       return UserInfo(info.amount, info.rewardDebt);
     }
   }
@@ -313,7 +311,7 @@ contract IncentivesControllerV2 is Ownable {
       totalAllocPoint = totalAllocPoint.add(poolInfo[token].allocPoint);
     }
     startTime = incentivesController.startTime();
-    _updateEmissions();
+    rewardsPerSecond = incentivesController.rewardsPerSecond();
     setuped = true;
   }
 }
