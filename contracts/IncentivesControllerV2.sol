@@ -312,6 +312,7 @@ contract IncentivesControllerV2 is Ownable {
     }
     startTime = incentivesController.startTime();
     rewardsPerSecond = incentivesController.rewardsPerSecond();
+    mintedTokens = incentivesController.mintedTokens();
     setuped = true;
   }
 }

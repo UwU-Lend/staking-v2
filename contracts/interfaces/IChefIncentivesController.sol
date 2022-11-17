@@ -15,6 +15,7 @@ interface IChefIncentivesController {
     uint accRewardPerShare; // Accumulated rewards per share, times 1e12. See below.
     IOnwardIncentivesController onwardIncentives;
   }
+  function mintedTokens() external view returns (uint);
   function rewardsPerSecond() external view returns (uint);
   function startTime() external view returns(uint);
   function poolInfo(address token) external view returns(PoolInfo memory);
