@@ -269,8 +269,9 @@ contract IncentivesControllerV2 is Ownable {
       require(pool.lastRewardTime > 0);
       _updatePool(pool, _totalAllocPoint);
       UserInfo storage user = _userInfo[_tokens[i]][_user];
-      uint rewardDebt = user.amount.mul(pool.accRewardPerShare).div(1e12);
-      pending = pending.add(rewardDebt.sub(user.rewardDebt));
+      UserInfo memory info = userInfo(_tokens[i], _user);
+      uint rewardDebt = info.amount.mul(pool.accRewardPerShare).div(1e12);
+      pending = pending.add(rewardDebt.sub(info.rewardDebt));
       user.rewardDebt = rewardDebt;
     }
     _mint(_user, pending);
