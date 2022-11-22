@@ -10,12 +10,7 @@ import "./interfaces/IStakingRewards.sol";
 import "./interfaces/IMultiFeeDistribution.sol";
 import "./interfaces/IChefIncentivesController.sol";
 import "./interfaces/IDistributor.sol";
-
-/*
-- lockedBalance
-- lockedSupply
-
- */
+import "./interfaces/IMigration.sol";
 
 contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   using SafeMath for uint;
@@ -65,7 +60,6 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   IERC20 public immutable stakingToken;
   IERC20 public immutable rewardToken;
   address public immutable rewardTokenVault;
-  IDistributor public immutable distributor;
   address public teamRewardVault;
   uint public teamRewardFee = 2000; // 1% = 100
   IStakingRewards public stakingRewards;
@@ -82,14 +76,16 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
 
   mapping(address => address) public exitDelegatee;
 
-  constructor(address _stakingToken, address _rewardToken, address _rewardTokenVault, IDistributor _distributor) Ownable() {
+  // Migration data
+  IMigration public migration;
+
+  constructor(address _stakingToken, address _rewardToken, address _rewardTokenVault) Ownable() {
     stakingToken = IERC20(_stakingToken);
     rewardToken = IERC20(_rewardToken);
     rewardTokenVault = _rewardTokenVault;
     rewardTokens.push(_rewardToken);
     rewardData[_rewardToken].lastUpdateTime = block.timestamp;
     rewardData[_rewardToken].periodFinish = block.timestamp;
-    distributor = _distributor;
   }
 
   function setTeamRewardVault(address vault) external onlyOwner {
@@ -188,16 +184,22 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
       penaltyAmount = earned.sub(amountWithoutPenalty).div(2);
     }
     amount = earned.sub(penaltyAmount);
-    // return (amount, penaltyAmount);
   }
 
   function totalLockedBalance(address user) public view returns (uint) {
-    (,, uint distLocked,) = distributor.lockedBalances(user);
-    return balances[user].locked.add(distLocked);
+    if (address(migration) == address(0)) {
+      return balances[user].locked;
+    } else {
+      return balances[user].locked.add(migration.balanceOf(user));
+    }
   }
 
   function totalLockedSupply() public view returns (uint) {
-    return lockedSupply.add(distributor.lockedSupply());
+    if (address(migration) == address(0)) {
+      return lockedSupply;
+    } else {
+      return lockedSupply.add(migration.totalSupply());
+    }
   }
 
   // Address and claimable amount of all reward tokens for the given account
@@ -437,4 +439,11 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
       adjustedAmount = reward;
     }
   }
+
+  // Migration
+  function setMigration(IMigration _migration) public onlyOwner {
+    migration = _migration;
+  }
+
+  
 }

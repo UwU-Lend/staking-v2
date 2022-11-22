@@ -36,7 +36,7 @@ export const MultiFeeDistributionV2Fixture = async (): Promise<MultiFeeDistribut
   const rewardTokenHolder = await ethers.getImpersonatedSigner(rewardTokenHolderAddress);
 
   const DistributorV2 = await ethers.getContractFactory('MultiFeeDistributionV2');
-  const distributorV2 = await DistributorV2.deploy(stakingTokenAddress, rewardTokenAddress, rewardTokenVaultAddress, distributorV1.address);
+  const distributorV2 = await DistributorV2.deploy(stakingTokenAddress, rewardTokenAddress, rewardTokenVaultAddress);
 
   const IncentivesController = await ethers.getContractFactory('IncentivesControllerMock');
   const incentivesController = await IncentivesController.deploy();
