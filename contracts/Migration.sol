@@ -70,7 +70,7 @@ contract Migration is Ownable {
       }
       Balance[] memory balances = _balancesBatch[i];
       for (uint j = 0; j < balances.length; j++) {
-        accountBalances[account].push(balances[i]);
+        accountBalances[account].push(balances[j]);
       }
       if (accountsIndexes[account] == 0) {
         accounts.push(account);
