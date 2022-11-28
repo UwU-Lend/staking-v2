@@ -12,6 +12,8 @@ import "./interfaces/IChefIncentivesController.sol";
 import "./interfaces/IDistributor.sol";
 import "./interfaces/IMigration.sol";
 
+import "hardhat/console.sol";
+
 contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   using SafeMath for uint;
   using SafeERC20 for IERC20;
@@ -432,6 +434,8 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
       uint lastTime = lastTimeRewardApplicable(token);
       if(address(migration) != address(0)) {
         IMigration.Balance[] memory accountBalances = migration.accountBalancesTimed(account, r.lastUpdateTime, lastTime);
+        // console.log('accountBalances', account, token, accountBalances.length);
+        // console.log('Time', r.lastUpdateTime, lastTime);
         for (uint j = 0; j < accountBalances.length; j++) {
           uint rpt = _rewardPerToken(token, totalLockedSupply(accountBalances[j].validUntil));
           r.rewardPerTokenStored = rpt;

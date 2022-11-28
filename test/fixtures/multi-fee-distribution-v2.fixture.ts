@@ -1,19 +1,21 @@
+import { IERC20, IncentivesControllerMock, IncentivesControllerMock__factory, Migration, MultiFeeDistributionV2, MultiFeeDistributionV2__factory } from '../../typechain-types';
+
 import { Contract } from 'ethers';
-import { IERC20 } from '../../typechain-types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import distributorABI from '../../abis/MultiFeeDistribution.json';
 import { ethers } from 'hardhat';
+import { migrationFixture } from './migration.fixture';
 
 export type MultiFeeDistributionV2FixtureResult = {
-  distributorV1: Contract;
-  distributorV2: Contract;
+  migration: Migration;
+  distributorV2: MultiFeeDistributionV2;
   stakingToken: IERC20;
   stakingTokenHolder: SignerWithAddress;
   rewardToken: IERC20;
   rewardTokenHolder: SignerWithAddress;
   rewardTokenVaultAddress: string;
   uToken: IERC20;
-  incentivesController: Contract;
+  incentivesController: IncentivesControllerMock;
 }
 
 export const MultiFeeDistributionV2Fixture = async (): Promise<MultiFeeDistributionV2FixtureResult> => {
@@ -35,16 +37,22 @@ export const MultiFeeDistributionV2Fixture = async (): Promise<MultiFeeDistribut
   await ethers.provider.send('hardhat_setBalance', [rewardTokenHolderAddress, ethers.utils.parseEther('1000').toHexString()]);
   const rewardTokenHolder = await ethers.getImpersonatedSigner(rewardTokenHolderAddress);
 
-  const DistributorV2 = await ethers.getContractFactory('MultiFeeDistributionV2');
-  const distributorV2 = await DistributorV2.deploy(stakingTokenAddress, rewardTokenAddress, rewardTokenVaultAddress);
+  const DistributorV2: MultiFeeDistributionV2__factory = await ethers.getContractFactory('MultiFeeDistributionV2');
+  const distributorV2: MultiFeeDistributionV2 = await DistributorV2.deploy(stakingTokenAddress, rewardTokenAddress, rewardTokenVaultAddress);
 
-  const IncentivesController = await ethers.getContractFactory('IncentivesControllerMock');
-  const incentivesController = await IncentivesController.deploy();
+  const IncentivesController: IncentivesControllerMock__factory = await ethers.getContractFactory('IncentivesControllerMock');
+  const incentivesController: IncentivesControllerMock = await IncentivesController.deploy();
 
-  await distributorV2.setIncentivesController(incentivesController.address);
+  const {migration} = await migrationFixture();
+
+  // await distributorV2.setIncentivesController(incentivesController.address);
+  // await distributorV2.setMigration(migration.address);
 
   const UToken = await ethers.getContractFactory('UTokenMock');
   const uToken = await UToken.deploy(ethers.utils.parseEther("1000000")) as IERC20;
 
-  return { distributorV1, distributorV2, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder, rewardTokenVaultAddress, uToken, incentivesController };
+  return {
+    migration, distributorV2, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder,
+    rewardTokenVaultAddress, uToken, incentivesController,
+  };
 }

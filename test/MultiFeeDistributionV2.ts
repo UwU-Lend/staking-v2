@@ -1,9 +1,12 @@
 import { loadFixture, time } from "@nomicfoundation/hardhat-network-helpers";
 
 import { BigNumber } from "ethers";
+import { IMigration } from "../typechain-types";
 import { MultiFeeDistributionV2Fixture } from "./fixtures/multi-fee-distribution-v2.fixture";
 import { ethers } from "hardhat";
 import { expect } from "chai";
+
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 const getCalcAmount = (treasuryAmount: BigNumber, locked: BigNumber, totalLocked: BigNumber): BigNumber => {
   const ration = locked.mul(BigNumber.from('1000000000000000000000000000000000000')).div(totalLocked);
@@ -21,14 +24,24 @@ const adjustReward = (rewardAmount: BigNumber, teamRewardFee: BigNumber): Adjust
 
 describe("MultiFeeDistributionV2", () => {
   describe("Deployment", () => {
-    it("Should be the right set distributor", async () => {
-      const { distributorV1, distributorV2 } = await loadFixture(MultiFeeDistributionV2Fixture);
-      const distributorAddress: string = await distributorV2.distributor();
-      expect(distributorAddress).to.be.equals(distributorV1.address);
+    it("Sould be the right set staking token", async () => {
+      const { distributorV2, stakingToken } = await loadFixture(MultiFeeDistributionV2Fixture);
+      const tokenAddress: string = await distributorV2.stakingToken();
+      expect(stakingToken.address).to.be.equals(tokenAddress);
+    });
+    it("Sould be the right set reward token", async () => {
+      const { distributorV2, rewardToken } = await loadFixture(MultiFeeDistributionV2Fixture);
+      const tokenAddress: string = await distributorV2.rewardToken();
+      expect(rewardToken.address).to.be.equals(tokenAddress);
+    });
+    it("Sould be the right set reward token vault", async () => {
+      const { distributorV2, rewardTokenVaultAddress } = await loadFixture(MultiFeeDistributionV2Fixture);
+      const vaultAddress: string = await distributorV2.rewardTokenVault();
+      expect(rewardTokenVaultAddress).to.be.equals(vaultAddress);
     });
     it("Sould be the right set team fee", async () => {
       const { distributorV2 } = await loadFixture(MultiFeeDistributionV2Fixture);
-      const teamRewardFee: string = await distributorV2.teamRewardFee();
+      const teamRewardFee: BigNumber = await distributorV2.teamRewardFee();
       expect(teamRewardFee).to.be.equals(2000);
     });
   });
@@ -69,68 +82,98 @@ describe("MultiFeeDistributionV2", () => {
   describe("TotalLockedBalance", () => {
     it("Should be the right set total locked balance by user", async () => {
       const [, user, user2] = await ethers.getSigners();
-      const { distributorV1, distributorV2, stakingToken, stakingTokenHolder } = await loadFixture(MultiFeeDistributionV2Fixture);
+      const { distributorV2, stakingToken, stakingTokenHolder, migration } = await loadFixture(MultiFeeDistributionV2Fixture);
+      const latest: number = await time.latest();
       const lockAmountInWei1_1 = ethers.utils.parseEther("100");
       const lockAmountInWei1_2 = ethers.utils.parseEther("200");
       const lockAmountInWei2_1 = ethers.utils.parseEther("300");
       const lockAmountInWei2_2 = ethers.utils.parseEther("400");
-      await stakingToken.connect(stakingTokenHolder).transfer(user.address, lockAmountInWei1_1.add(lockAmountInWei1_2));
-      await stakingToken.connect(stakingTokenHolder).transfer(user2.address, lockAmountInWei2_1.add(lockAmountInWei2_2));
-      await stakingToken.connect(user).approve(distributorV1.address, lockAmountInWei1_1);
-      await distributorV1.connect(user).lock(lockAmountInWei1_1, user.address);
-      await stakingToken.connect(user2).approve(distributorV1.address, lockAmountInWei2_1);
-      await distributorV1.connect(user2).lock(lockAmountInWei2_1, user2.address);
+      const balances1: IMigration.BalanceStruct[] = [{
+        amount: lockAmountInWei1_1,
+        validUntil: latest + 86400 * 5,
+      }];
+      const balances2: IMigration.BalanceStruct[] = [{
+        amount: lockAmountInWei2_1,
+        validUntil: latest + 86400 * 5,
+      }];
+      await migration.setBalancesBatch([user.address, user2.address], [balances1, balances2]);
+      await stakingToken.connect(stakingTokenHolder).transfer(user.address, lockAmountInWei1_2);
+      await stakingToken.connect(stakingTokenHolder).transfer(user2.address, lockAmountInWei2_2);
       await stakingToken.connect(user).approve(distributorV2.address, lockAmountInWei1_2);
       await distributorV2.connect(user).lock(lockAmountInWei1_2, user.address);
       await stakingToken.connect(user2).approve(distributorV2.address, lockAmountInWei2_2);
       await distributorV2.connect(user2).lock(lockAmountInWei2_2, user2.address);
-      const totalLockedBalance1 = await distributorV2.totalLockedBalance(user.address);
-      const totalLockedBalance2 = await distributorV2.totalLockedBalance(user2.address);
-      expect(totalLockedBalance1).to.be.equals(lockAmountInWei1_1.add(lockAmountInWei1_2));
-      expect(totalLockedBalance2).to.be.equals(lockAmountInWei2_1.add(lockAmountInWei2_2));
+      const totalLockedBalance1 = await distributorV2['totalLockedBalance(address)'](user.address);
+      const totalLockedBalance2 = await distributorV2['totalLockedBalance(address)'](user2.address);
+      await distributorV2.setMigration(migration.address);
+      const totalLockedBalance3 = await distributorV2['totalLockedBalance(address)'](user.address);
+      const totalLockedBalance4 = await distributorV2['totalLockedBalance(address)'](user2.address);
+      expect(totalLockedBalance1).to.be.equals(lockAmountInWei1_2);
+      expect(totalLockedBalance2).to.be.equals(lockAmountInWei2_2);
+      expect(totalLockedBalance3).to.be.equals(lockAmountInWei1_1.add(lockAmountInWei1_2));
+      expect(totalLockedBalance4).to.be.equals(lockAmountInWei2_1.add(lockAmountInWei2_2));
     });
   });
   describe("TotalLockedSupply", () => {
     it("Should be the right set total locked suppply", async () => {
       const [, user, user2] = await ethers.getSigners();
-      const { distributorV1, distributorV2, stakingToken, stakingTokenHolder } = await loadFixture(MultiFeeDistributionV2Fixture);
-      const lockAmountInWei1_1 = ethers.utils.parseEther("100");
-      const lockAmountInWei1_2 = ethers.utils.parseEther("200");
-      const lockAmountInWei2_1 = ethers.utils.parseEther("300");
-      const lockAmountInWei2_2 = ethers.utils.parseEther("400");
-      await stakingToken.connect(stakingTokenHolder).transfer(user.address, lockAmountInWei1_1.add(lockAmountInWei1_2));
-      await stakingToken.connect(stakingTokenHolder).transfer(user2.address, lockAmountInWei2_1.add(lockAmountInWei2_2));
-      const totalLockedSupplyBefore = await distributorV2.totalLockedSupply();
-      await stakingToken.connect(user).approve(distributorV1.address, lockAmountInWei1_1);
-      await distributorV1.connect(user).lock(lockAmountInWei1_1, user.address);
-      await stakingToken.connect(user2).approve(distributorV1.address, lockAmountInWei2_1);
-      await distributorV1.connect(user2).lock(lockAmountInWei2_1, user2.address);
-      await stakingToken.connect(user).approve(distributorV2.address, lockAmountInWei1_2);
-      await distributorV2.connect(user).lock(lockAmountInWei1_2, user.address);
-      await stakingToken.connect(user2).approve(distributorV2.address, lockAmountInWei2_2);
-      await distributorV2.connect(user2).lock(lockAmountInWei2_2, user2.address);
-      const totalLockedSupplyAfter = await distributorV2.totalLockedSupply();
-      expect(totalLockedSupplyAfter.sub(totalLockedSupplyBefore)).to.be.equals(lockAmountInWei1_1.add(lockAmountInWei1_2).add(lockAmountInWei2_1).add(lockAmountInWei2_2));
+      const { distributorV2, stakingToken, stakingTokenHolder, migration } = await loadFixture(MultiFeeDistributionV2Fixture);
+      const migrationBalance1 = ethers.utils.parseEther("100");
+      const migrationBalance2 = ethers.utils.parseEther("200");
+      const lockAmountInWei1 = ethers.utils.parseEther("300");
+      const lockAmountInWei2 = ethers.utils.parseEther("400");
+      const latest: number = await time.latest();
+      const balances1: IMigration.BalanceStruct[] = [{
+        amount: migrationBalance1,
+        validUntil: latest + 86400 * 5,
+      }];
+      const balances2: IMigration.BalanceStruct[] = [{
+        amount: migrationBalance2,
+        validUntil: latest + 86400 * 5,
+      }];
+      await migration.setBalancesBatch([user.address, user2.address], [balances1, balances2]);
+      await stakingToken.connect(stakingTokenHolder).transfer(user.address, lockAmountInWei1);
+      await stakingToken.connect(stakingTokenHolder).transfer(user2.address, lockAmountInWei2);
+      const totalLockedSupplyBefore = await distributorV2['totalLockedSupply()']();
+      await stakingToken.connect(user).approve(distributorV2.address, lockAmountInWei1);
+      await distributorV2.connect(user).lock(lockAmountInWei1, user.address);
+      await stakingToken.connect(user2).approve(distributorV2.address, lockAmountInWei2);
+      await distributorV2.connect(user2).lock(lockAmountInWei2, user2.address);
+      const totalLockedSupplyAfter1 = await distributorV2['totalLockedSupply()']();
+      await distributorV2.setMigration(migration.address);
+      const totalLockedSupplyAfter2 = await distributorV2['totalLockedSupply()']();
+      expect(totalLockedSupplyAfter1.sub(totalLockedSupplyBefore)).to.be.equals(
+        lockAmountInWei1.add(lockAmountInWei2)
+      );
+      expect(totalLockedSupplyAfter2.sub(totalLockedSupplyBefore)).to.be.equals(
+        lockAmountInWei1.add(lockAmountInWei2).add(migrationBalance1).add(migrationBalance2)
+      );
     });
   });
   describe("Lock -> MintToTreasury -> GetReward", () => {
     describe("All LP tokens locked only to v1", () => {
       it("Should be earned the right utoken amount", async () => {
         const [, user, user2] = await ethers.getSigners();
-        const { distributorV1, distributorV2, uToken, stakingToken, stakingTokenHolder } = await loadFixture(MultiFeeDistributionV2Fixture);
+        const { migration, distributorV2, uToken, stakingToken, stakingTokenHolder } = await loadFixture(MultiFeeDistributionV2Fixture);
         const lockAmountInWei1 = ethers.utils.parseEther("100");
         const lockAmountInWei2 = ethers.utils.parseEther("200");
-        await stakingToken.connect(stakingTokenHolder).transfer(user.address, lockAmountInWei1);
-        await stakingToken.connect(stakingTokenHolder).transfer(user2.address, lockAmountInWei2);
-        await stakingToken.connect(user).approve(distributorV1.address, lockAmountInWei1);
-        await distributorV1.connect(user).lock(lockAmountInWei1, user.address);
-        await stakingToken.connect(user2).approve(distributorV1.address, lockAmountInWei2);
-        await distributorV1.connect(user2).lock(lockAmountInWei2, user2.address);
-        const totalLockedSupply = await distributorV2.totalLockedSupply();
+        const latest: number = await time.latest();
+        const balances1: IMigration.BalanceStruct[] = [{
+          amount: lockAmountInWei1,
+          validUntil: latest + 86400 * 25,
+        }];
+        const balances2: IMigration.BalanceStruct[] = [{
+          amount: lockAmountInWei2,
+          validUntil: latest + 86400 * 25,
+        }];
+        await migration.setBalancesBatch([user.address, user2.address], [balances1, balances2]);
+        await distributorV2.setMigration(migration.address);
+        const totalLockedSupply: BigNumber = await distributorV2['totalLockedSupply()']();
         await distributorV2.addReward(uToken.address);
         const treasuryAmountInWei = ethers.utils.parseEther("1000");
         await uToken.transfer(distributorV2.address, treasuryAmountInWei);
-        await distributorV2.connect(user).getReward([uToken.address]);
+        await distributorV2.getReward([uToken.address]);
+        // await distributorV2.connect(user2).getReward([uToken.address]);
         await time.increase(86400 * 7);
         await distributorV2.connect(user).getReward([uToken.address]);
         await distributorV2.connect(user2).getReward([uToken.address]);
@@ -143,16 +186,20 @@ describe("MultiFeeDistributionV2", () => {
       });
       it("Should be earned the right reward amount", async () => {
         const [, user, user2, incentivesControllerSigner] = await ethers.getSigners();
-        const { distributorV1, distributorV2, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder, rewardTokenVaultAddress } = await loadFixture(MultiFeeDistributionV2Fixture);
+        const { migration, distributorV2, rewardToken, rewardTokenVaultAddress } = await loadFixture(MultiFeeDistributionV2Fixture);
         const lockAmountInWei1 = ethers.utils.parseEther("100");
         const lockAmountInWei2 = ethers.utils.parseEther("200");
-        await stakingToken.connect(stakingTokenHolder).transfer(user.address, lockAmountInWei1);
-        await stakingToken.connect(stakingTokenHolder).transfer(user2.address, lockAmountInWei2);
-        await stakingToken.connect(user).approve(distributorV1.address, lockAmountInWei1);
-        await distributorV1.connect(user).lock(lockAmountInWei1, user.address);
-        await stakingToken.connect(user2).approve(distributorV1.address, lockAmountInWei2);
-        await distributorV1.connect(user2).lock(lockAmountInWei2, user2.address);
-        const totalLockedSupply = await distributorV2.totalLockedSupply();
+        const latest: number = await time.latest();
+        const balances1: IMigration.BalanceStruct[] = [{
+          amount: lockAmountInWei1,
+          validUntil: latest + 86400 * 10,
+        }];
+        const balances2: IMigration.BalanceStruct[] = [{
+          amount: lockAmountInWei2,
+          validUntil: latest + 86400 * 10,
+        }];
+        await migration.setBalancesBatch([user.address, user2.address], [balances1, balances2]);
+        const totalLockedSupply = await distributorV2['totalLockedSupply()']();
         await ethers.provider.send('hardhat_setBalance', [rewardTokenVaultAddress, ethers.utils.parseEther('1000').toHexString()]);
         const rewardTokenVaultSigner = await ethers.getImpersonatedSigner(rewardTokenVaultAddress);
         const treasuryAmountInWei = ethers.utils.parseEther("1000");

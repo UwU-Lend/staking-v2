@@ -43,14 +43,14 @@ contract Migration is IMigration, Ownable {
   function accountBalancesTimed(address account, uint from, uint to) external view returns (Balance[] memory balances) {
     uint length = 0;
     for (uint i = 0; i < accountBalances[account].length; i++) {
-      if (accountBalances[account][i].validUntil > from && accountBalances[account][i].validUntil <= to) {
+      if (accountBalances[account][i].validUntil > from && accountBalances[account][i].validUntil >= to) {
         length++;
       }
     }
     balances = new Balance[](length);
     uint counter = 0;
     for (uint i = 0; i < accountBalances[account].length; i++) {
-      if (accountBalances[account][i].validUntil > from && accountBalances[account][i].validUntil <= to) {
+      if (accountBalances[account][i].validUntil > from && accountBalances[account][i].validUntil >= to) {
         balances[counter++] = accountBalances[account][i];
       }
     }
