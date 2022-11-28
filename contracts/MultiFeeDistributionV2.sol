@@ -187,18 +187,26 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   }
 
   function totalLockedBalance(address user) public view returns (uint) {
+    return totalLockedBalance(user, block.timestamp);
+  }
+
+  function totalLockedBalance(address user, uint time) public view returns (uint) {
     if (address(migration) == address(0)) {
       return balances[user].locked;
     } else {
-      return balances[user].locked.add(migration.balanceOf(user));
+      return balances[user].locked.add(migration.balanceOf(user, time));
     }
   }
 
   function totalLockedSupply() public view returns (uint) {
+    return totalLockedSupply(block.timestamp);
+  }
+
+  function totalLockedSupply(uint time) public view returns (uint) {
     if (address(migration) == address(0)) {
       return lockedSupply;
     } else {
-      return lockedSupply.add(migration.totalSupply());
+      return lockedSupply.add(migration.totalSupply(time));
     }
   }
 
@@ -346,6 +354,11 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
     return block.timestamp < periodFinish ? block.timestamp : periodFinish;
   }
 
+  function lastTimeRewardApplicable(address _rewardsToken, uint time) public view returns (uint) {
+    uint periodFinish = rewardData[_rewardsToken].periodFinish;
+    return time < periodFinish ? time : periodFinish;
+  }
+
   function _getReward(address[] memory _rewardTokens) internal {
     uint length = _rewardTokens.length;
     for (uint i; i < length; i++) {
@@ -416,14 +429,28 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
     for (uint i = 0; i < length; i++) {
       address token = rewardTokens[i];
       Reward storage r = rewardData[token];
-      // uint rpt = _rewardPerToken(token, lockedSupply);
-      uint rpt = _rewardPerToken(token, totalLockedSupply());
-      r.rewardPerTokenStored = rpt;
-      r.lastUpdateTime = lastTimeRewardApplicable(token);
-      if (account != address(this)) {
-        // rewards[account][token] = _earned(account, token, balances[account].locked, rpt);
-        rewards[account][token] = _earned(account, token, totalLockedBalance(account), rpt);
-        userRewardPerTokenPaid[account][token] = rpt;
+      uint lastTime = lastTimeRewardApplicable(token);
+      if(address(migration) != address(0)) {
+        IMigration.Balance[] memory accountBalances = migration.accountBalancesTimed(account, r.lastUpdateTime, lastTime);
+        for (uint j = 0; j < accountBalances.length; j++) {
+          uint rpt = _rewardPerToken(token, totalLockedSupply(accountBalances[j].validUntil));
+          r.rewardPerTokenStored = rpt;
+          r.lastUpdateTime = lastTimeRewardApplicable(token, accountBalances[j].validUntil);
+          if (account != address(this)) {
+            // rewards[account][token] = _earned(account, token, balances[account].locked, rpt);
+            rewards[account][token] = _earned(account, token, totalLockedBalance(account, accountBalances[j].validUntil), rpt);
+            userRewardPerTokenPaid[account][token] = rpt;
+          }
+        }
+      } else {
+        uint rpt = _rewardPerToken(token, totalLockedSupply());
+        r.rewardPerTokenStored = rpt;
+        r.lastUpdateTime = lastTimeRewardApplicable(token);
+        if (account != address(this)) {
+          // rewards[account][token] = _earned(account, token, balances[account].locked, rpt);
+          rewards[account][token] = _earned(account, token, totalLockedBalance(account), rpt);
+          userRewardPerTokenPaid[account][token] = rpt;
+        }
       }
     }
   }
@@ -444,6 +471,4 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   function setMigration(IMigration _migration) public onlyOwner {
     migration = _migration;
   }
-
-  
 }

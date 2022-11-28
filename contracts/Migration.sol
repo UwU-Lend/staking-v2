@@ -2,22 +2,22 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-
+import "./interfaces/IMigration.sol";
 import "hardhat/console.sol";
 
-contract Migration is Ownable {
-  struct Balance {
-    uint256 amount;
-    uint256 validUntil;
-  }
+contract Migration is IMigration, Ownable {
   address[] public accounts;
   mapping(address => uint) public accountsIndexes;
   mapping(address => Balance[]) public accountBalances;
 
   function balanceOf(address account) external view returns(uint) {
+    return balanceOf(account, block.timestamp);
+  }
+
+  function balanceOf(address account, uint time) public view returns(uint) {
     uint total = 0;
     for (uint i = 0; i < accountBalances[account].length; i++) {
-      if (accountBalances[account][i].validUntil > block.timestamp) {
+      if (accountBalances[account][i].validUntil >= time) {
         total += accountBalances[account][i].amount;
       }
     }
@@ -25,15 +25,35 @@ contract Migration is Ownable {
   }
 
   function totalSupply() external view returns(uint) {
+    return totalSupply(block.timestamp);
+  }
+
+  function totalSupply(uint time) public view returns(uint) {
     uint total = 0;
     for (uint i = 0; i < accounts.length; i++) {
       for (uint j = 0; j < accountBalances[accounts[i]].length; j++) {
-        if (accountBalances[accounts[i]][j].validUntil > block.timestamp) {
+        if (accountBalances[accounts[i]][j].validUntil >= time) {
           total += accountBalances[accounts[i]][j].amount;
         }
       }
     }
     return total;
+  }
+
+  function accountBalancesTimed(address account, uint from, uint to) external view returns (Balance[] memory balances) {
+    uint length = 0;
+    for (uint i = 0; i < accountBalances[account].length; i++) {
+      if (accountBalances[account][i].validUntil > from && accountBalances[account][i].validUntil <= to) {
+        length++;
+      }
+    }
+    balances = new Balance[](length);
+    uint counter = 0;
+    for (uint i = 0; i < accountBalances[account].length; i++) {
+      if (accountBalances[account][i].validUntil > from && accountBalances[account][i].validUntil <= to) {
+        balances[counter++] = accountBalances[account][i];
+      }
+    }
   }
 
   function setBalances(address account, Balance[] calldata balances) external onlyOwner {
