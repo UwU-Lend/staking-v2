@@ -8,6 +8,14 @@ import { expect } from "chai";
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
+const earned = (balance: BigNumber, currentRewardPerToken: BigNumber, rewardPerTokenPaid: BigNumber): BigNumber => {
+  return balance.mul(currentRewardPerToken.sub(rewardPerTokenPaid));// .add(rewards);
+}
+
+const rewardPerToken = (lastTime: BigNumber, lastUpdateTime: BigNumber, rewardRate: BigNumber, supply: BigNumber): BigNumber => {
+  return lastTime.sub(lastUpdateTime).mul(rewardRate).div(supply);
+}
+
 const getCalcAmount = (treasuryAmount: BigNumber, locked: BigNumber, totalLocked: BigNumber): BigNumber => {
   const ration = locked.mul(BigNumber.from('1000000000000000000000000000000000000')).div(totalLocked);
   return treasuryAmount.mul(ration).div(BigNumber.from('1000000000000000000000000000000000000'));
@@ -173,7 +181,6 @@ describe("MultiFeeDistributionV2", () => {
         const treasuryAmountInWei = ethers.utils.parseEther("1000");
         await uToken.transfer(distributorV2.address, treasuryAmountInWei);
         await distributorV2.getReward([uToken.address]);
-        // await distributorV2.connect(user2).getReward([uToken.address]);
         await time.increase(86400 * 7);
         await distributorV2.connect(user).getReward([uToken.address]);
         await distributorV2.connect(user2).getReward([uToken.address]);
@@ -551,7 +558,102 @@ describe("MultiFeeDistributionV2", () => {
       expect(teameFeeVaultBalance).to.be.equals(feeAmount);
     });
   });
-  describe("Border state", () => {
-    
+  describe("Locked time segments", () => {
+    describe("accountBalances == 0 && v2 lock", () => {
+      it("", async () => {
+        const [, user] = await ethers.getSigners();
+        const { distributorV2, stakingToken, stakingTokenHolder, migration, uToken } = await loadFixture(MultiFeeDistributionV2Fixture);
+        const lockAmountInWei1 = ethers.utils.parseEther("100");
+        await distributorV2.setMigration(migration.address);
+
+        await stakingToken.connect(stakingTokenHolder).transfer(user.address, lockAmountInWei1);
+        await stakingToken.connect(user).approve(distributorV2.address, lockAmountInWei1);
+        await distributorV2.connect(user).lock(lockAmountInWei1, user.address);
+
+        await distributorV2.addReward(uToken.address);
+        const treasuryAmountInWei = ethers.utils.parseEther("1000");
+        await uToken.transfer(distributorV2.address, treasuryAmountInWei);
+        await distributorV2.getReward([uToken.address]);
+        const totalLockedSupply = await distributorV2['totalLockedSupply()']();
+        const now1 = await time.increase(86400 * 7);
+        await distributorV2.connect(user).getReward([uToken.address]);
+        const balance1 = await uToken.balanceOf(user.address);
+        const diff = balance1.gte(treasuryAmountInWei) ? balance1.sub(treasuryAmountInWei) : treasuryAmountInWei.sub(balance1);
+        expect(diff).to.be.lte(1);
+      });
+    });
+    describe("accountBalances == 1 && lastValidUntil < now", () => {
+      it("", async() => {
+        const [, user, user2] = await ethers.getSigners();
+        const { distributorV2, stakingToken, stakingTokenHolder, migration, uToken } = await loadFixture(MultiFeeDistributionV2Fixture);
+        await distributorV2.setMigration(migration.address);
+        const latest: number = await time.latest();
+        const lockAmountInWei1_1 = ethers.utils.parseEther("100");
+        const lockAmountInWei1_2 = ethers.utils.parseEther("200");
+        const lockAmountInWei2_1 = ethers.utils.parseEther("300");
+        const lockAmountInWei2_2 = ethers.utils.parseEther("400");
+        const balances1: IMigration.BalanceStruct[] = [{
+          amount: lockAmountInWei1_1,
+          validUntil: latest + 86400 * 5,
+        }];
+        const balances2: IMigration.BalanceStruct[] = [{
+          amount: lockAmountInWei2_1,
+          validUntil: latest + 86400 * 10,
+        }];
+        await migration.setBalancesBatch([user.address, user2.address], [balances1, balances2]);
+
+        await distributorV2.addReward(uToken.address);
+        const treasuryAmountInWei = ethers.utils.parseEther("1000");
+        await uToken.transfer(distributorV2.address, treasuryAmountInWei);
+
+        await stakingToken.connect(stakingTokenHolder).transfer(user.address, lockAmountInWei1_2);
+        await stakingToken.connect(user).approve(distributorV2.address, lockAmountInWei1_2);
+        await distributorV2.connect(user).lock(lockAmountInWei1_2, user.address);
+
+        await stakingToken.connect(stakingTokenHolder).transfer(user2.address, lockAmountInWei2_2);
+        await stakingToken.connect(user2).approve(distributorV2.address, lockAmountInWei2_2);
+        await distributorV2.connect(user2).lock(lockAmountInWei2_2, user2.address);
+
+        // await distributorV2.getReward([uToken.address]);
+        await time.increase(86400 * 7);
+        await distributorV2.connect(user).getReward([uToken.address]);
+        await distributorV2.connect(user2).getReward([uToken.address]);
+        const balance1 = await uToken.balanceOf(user.address);
+        const balance2 = await uToken.balanceOf(user2.address);
+        const precision = BigNumber.from(10).pow(20);
+        const rewardPerSecond = treasuryAmountInWei.mul(precision).div(86400 * 7);
+        const range1 = rewardPerSecond.mul(86400 * 5).div(precision);
+        const range2 = rewardPerSecond.mul(86400 * 2).div(precision);
+        console.log('Ranges', range1.toString(), range2.toString(), range1.add(range2).toString());
+
+
+        const share1_1 = range1.mul(300).div(1000);
+        const share1_2 = range2.mul(200).div(900);
+        const share2_1 = range1.mul(700).div(1000);
+        const share2_2 = range2.mul(700).div(900);
+        console.log('Share1', share1_1.toString(), share1_2.toString(), share1_1.add(share1_2).toString());
+        console.log('Share2', share2_1.toString(), share2_2.toString(), share2_1.add(share2_2).toString());
+
+        const totalLockedSupply1 = await distributorV2['totalLockedSupply(uint256)'](latest + 86400 * 5);
+        const totalLockedBalance1_1 = await distributorV2['totalLockedBalance(address,uint256)'](user.address, latest + 86400 * 5);
+        const totalLockedBalance2_1 = await distributorV2['totalLockedBalance(address,uint256)'](user2.address, latest + 86400 * 5);
+        const totalLockedSupply2 = await distributorV2['totalLockedSupply(uint256)'](latest + 86400 * 7);
+        const totalLockedBalance1_2 = await distributorV2['totalLockedBalance(address,uint256)'](user.address, latest + 86400 * 7);
+        const totalLockedBalance2_2 = await distributorV2['totalLockedBalance(address,uint256)'](user2.address, latest + 86400 * 7);
+
+        const calcAmount1_1 = getCalcAmount(range1, totalLockedBalance1_1, totalLockedSupply1);
+        const calcAmount1_2 = getCalcAmount(range2, totalLockedBalance1_2, totalLockedSupply2);
+        const calcAmount2_1 = getCalcAmount(range1, totalLockedBalance2_1, totalLockedSupply1);
+        const calcAmount2_2 = getCalcAmount(range2, totalLockedBalance2_2, totalLockedSupply2);
+        console.log('totalLockedSupply', totalLockedSupply1.toString(), totalLockedSupply2.toString());
+        console.log('balances', balance1.toString(), balance2.toString());
+        console.log('CalcAmount1', calcAmount1_1.toString(), calcAmount1_2.toString(), calcAmount1_1.add(calcAmount1_2).toString());
+        console.log('CalcAmount2', calcAmount2_1.toString(), calcAmount2_2.toString(), calcAmount2_1.add(calcAmount2_2).toString());
+
+
+        // const diff = balance1.gte(treasuryAmountInWei) ? balance1.sub(treasuryAmountInWei) : treasuryAmountInWei.sub(balance1);
+        // expect(diff).to.be.lte(1);
+      });
+    });
   });
 });

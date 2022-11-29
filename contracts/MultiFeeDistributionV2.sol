@@ -438,6 +438,7 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
         // console.log('Time', r.lastUpdateTime, lastTime);
         for (uint j = 0; j < accountBalances.length; j++) {
           uint _rpt = _rewardPerToken(token, totalLockedSupply(accountBalances[j].validUntil));
+          // console.log('Rpt', account, token, _rpt);
           r.rewardPerTokenStored = _rpt;
           r.lastUpdateTime = lastTimeRewardApplicable(token, accountBalances[j].validUntil);
           if (account != address(this)) {
@@ -448,6 +449,7 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
         }
       }
       uint rpt = _rewardPerToken(token, totalLockedSupply());
+      // console.log('Rpt2', account, token, rpt);
       r.rewardPerTokenStored = rpt;
       r.lastUpdateTime = lastTimeRewardApplicable(token);
       if (account != address(this)) {
