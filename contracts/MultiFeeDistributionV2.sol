@@ -437,24 +437,23 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
         // console.log('accountBalances', account, token, accountBalances.length);
         // console.log('Time', r.lastUpdateTime, lastTime);
         for (uint j = 0; j < accountBalances.length; j++) {
-          uint rpt = _rewardPerToken(token, totalLockedSupply(accountBalances[j].validUntil));
-          r.rewardPerTokenStored = rpt;
+          uint _rpt = _rewardPerToken(token, totalLockedSupply(accountBalances[j].validUntil));
+          r.rewardPerTokenStored = _rpt;
           r.lastUpdateTime = lastTimeRewardApplicable(token, accountBalances[j].validUntil);
           if (account != address(this)) {
             // rewards[account][token] = _earned(account, token, balances[account].locked, rpt);
-            rewards[account][token] = _earned(account, token, totalLockedBalance(account, accountBalances[j].validUntil), rpt);
-            userRewardPerTokenPaid[account][token] = rpt;
+            rewards[account][token] = _earned(account, token, totalLockedBalance(account, accountBalances[j].validUntil), _rpt);
+            userRewardPerTokenPaid[account][token] = _rpt;
           }
         }
-      } else {
-        uint rpt = _rewardPerToken(token, totalLockedSupply());
-        r.rewardPerTokenStored = rpt;
-        r.lastUpdateTime = lastTimeRewardApplicable(token);
-        if (account != address(this)) {
-          // rewards[account][token] = _earned(account, token, balances[account].locked, rpt);
-          rewards[account][token] = _earned(account, token, totalLockedBalance(account), rpt);
-          userRewardPerTokenPaid[account][token] = rpt;
-        }
+      }
+      uint rpt = _rewardPerToken(token, totalLockedSupply());
+      r.rewardPerTokenStored = rpt;
+      r.lastUpdateTime = lastTimeRewardApplicable(token);
+      if (account != address(this)) {
+        // rewards[account][token] = _earned(account, token, balances[account].locked, rpt);
+        rewards[account][token] = _earned(account, token, totalLockedBalance(account), rpt);
+        userRewardPerTokenPaid[account][token] = rpt;
       }
     }
   }
