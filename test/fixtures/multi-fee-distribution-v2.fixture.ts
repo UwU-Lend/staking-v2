@@ -7,7 +7,7 @@ import { ethers } from 'hardhat';
 import { migrationFixture } from './migration.fixture';
 
 export type MultiFeeDistributionV2FixtureResult = {
-  migration: Migration;
+  distributorV1: Contract;
   distributorV2: MultiFeeDistributionV2;
   stakingToken: IERC20;
   stakingTokenHolder: SignerWithAddress;
@@ -38,7 +38,7 @@ export const MultiFeeDistributionV2Fixture = async (): Promise<MultiFeeDistribut
   const rewardTokenHolder = await ethers.getImpersonatedSigner(rewardTokenHolderAddress);
 
   const DistributorV2: MultiFeeDistributionV2__factory = await ethers.getContractFactory('MultiFeeDistributionV2');
-  const distributorV2: MultiFeeDistributionV2 = await DistributorV2.deploy(stakingTokenAddress, rewardTokenAddress, rewardTokenVaultAddress);
+  const distributorV2: MultiFeeDistributionV2 = await DistributorV2.deploy(stakingTokenAddress, rewardTokenAddress, rewardTokenVaultAddress, distributorV1.address);
 
   const IncentivesController: IncentivesControllerMock__factory = await ethers.getContractFactory('IncentivesControllerMock');
   const incentivesController: IncentivesControllerMock = await IncentivesController.deploy();
@@ -52,7 +52,7 @@ export const MultiFeeDistributionV2Fixture = async (): Promise<MultiFeeDistribut
   const uToken = await UToken.deploy(ethers.utils.parseEther("1000000")) as IERC20;
 
   return {
-    migration, distributorV2, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder,
+    distributorV1, distributorV2, stakingToken, stakingTokenHolder, rewardToken, rewardTokenHolder,
     rewardTokenVaultAddress, uToken, incentivesController,
   };
 }

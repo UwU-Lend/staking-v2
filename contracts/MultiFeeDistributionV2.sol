@@ -5,18 +5,19 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "./interfaces/IStakingRewards.sol";
 import "./interfaces/IMultiFeeDistribution.sol";
 import "./interfaces/IChefIncentivesController.sol";
 import "./interfaces/IDistributor.sol";
-import "./interfaces/IMigration.sol";
 
 import "hardhat/console.sol";
 
 contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   using SafeMath for uint;
   using SafeERC20 for IERC20;
+  using EnumerableSet for EnumerableSet.AddressSet;
 
   event Locked(address indexed user, uint amount);
   event WithdrawnExpiredLocks(address indexed user, uint amount);
@@ -51,8 +52,7 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   uint public constant vestingDuration = rewardsDuration * 4; // 28 days
 
   // Addresses approved to call mint
-  mapping(address => bool) public minters;
-  bool public mintersAreSet;
+  EnumerableSet.AddressSet private minters;
 
   // user -> reward token -> amount
   mapping(address => mapping(address => uint)) public userRewardPerTokenPaid;
@@ -62,10 +62,10 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   IERC20 public immutable stakingToken;
   IERC20 public immutable rewardToken;
   address public immutable rewardTokenVault;
+  address public migration;
   address public teamRewardVault;
   uint public teamRewardFee = 2000; // 1% = 100
   IStakingRewards public stakingRewards;
-  bool public stakingRewardsAreSet;
   address[] public rewardTokens;
   mapping(address => Reward) public rewardData;
 
@@ -75,19 +75,15 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   mapping(address => Balances) private balances;
   mapping(address => LockedBalance[]) private userLocks; // stake UwU-ETH LP tokens
   mapping(address => LockedBalance[]) private userEarnings; // vesting UwU tokens
-
   mapping(address => address) public exitDelegatee;
 
-  // Migration data
-  IMigration public migration;
-
-  constructor(address _stakingToken, address _rewardToken, address _rewardTokenVault) Ownable() {
-    stakingToken = IERC20(_stakingToken);
-    rewardToken = IERC20(_rewardToken);
+  constructor(IERC20 _stakingToken, IERC20 _rewardToken, address _rewardTokenVault, IDistributor) Ownable() {
+    stakingToken = _stakingToken;
+    rewardToken = _rewardToken;
     rewardTokenVault = _rewardTokenVault;
-    rewardTokens.push(_rewardToken);
-    rewardData[_rewardToken].lastUpdateTime = block.timestamp;
-    rewardData[_rewardToken].periodFinish = block.timestamp;
+    rewardTokens.push(address(_rewardToken));
+    rewardData[address(_rewardToken)].lastUpdateTime = block.timestamp;
+    rewardData[address(_rewardToken)].periodFinish = block.timestamp;
   }
 
   function setTeamRewardVault(address vault) external onlyOwner {
@@ -100,17 +96,18 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   }
 
   function setStakingRewards(address _stakingRewards) external onlyOwner {
-    require(!stakingRewardsAreSet, 'stakingRewards already set');
     stakingRewards = IStakingRewards(_stakingRewards);
-    stakingRewardsAreSet = true;
   }
 
-  function setMinters(address[] memory _minters) external onlyOwner {
-    require(!mintersAreSet, 'minter already set');
-    for (uint i; i < _minters.length; i++) {
-      minters[_minters[i]] = true;
+  function getMinters() external view returns(address[] memory){
+    return minters.values();
+  }
+
+  function setMinters(address[] calldata _minters) external onlyOwner {
+    delete minters;
+    for (uint i = 0; i < _minters.length; i++) {
+      minters.add(_minters[i]);
     }
-    mintersAreSet = true;
   }
 
   function setIncentivesController(IChefIncentivesController _controller) external onlyOwner {
@@ -188,37 +185,12 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
     amount = earned.sub(penaltyAmount);
   }
 
-  function totalLockedBalance(address user) public view returns (uint) {
-    return totalLockedBalance(user, block.timestamp);
-  }
-
-  function totalLockedBalance(address user, uint time) public view returns (uint) {
-    if (address(migration) == address(0)) {
-      return balances[user].locked;
-    } else {
-      return balances[user].locked.add(migration.balanceOf(user, time));
-    }
-  }
-
-  function totalLockedSupply() public view returns (uint) {
-    return totalLockedSupply(block.timestamp);
-  }
-
-  function totalLockedSupply(uint time) public view returns (uint) {
-    if (address(migration) == address(0)) {
-      return lockedSupply;
-    } else {
-      return lockedSupply.add(migration.totalSupply(time));
-    }
-  }
-
   // Address and claimable amount of all reward tokens for the given account
   function claimableRewards(address account) external view returns (RewardData[] memory rewards) {
     rewards = new RewardData[](rewardTokens.length);
     for (uint i = 0; i < rewards.length; i++) {
       rewards[i].token = rewardTokens[i];
-      // rewards[i].amount = _earned(account, rewards[i].token, balances[account].locked, _rewardPerToken(rewardTokens[i], lockedSupply)).div(1e12);
-      rewards[i].amount = _earned(account, rewards[i].token, totalLockedBalance(account), _rewardPerToken(rewardTokens[i], totalLockedSupply())).div(1e12);
+      rewards[i].amount = _earned(account, rewards[i].token, balances[account].locked, _rewardPerToken(rewardTokens[i], lockedSupply)).div(1e12);
     }
     return rewards;
   }
@@ -234,7 +206,7 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
     uint unlockTime = block.timestamp.div(rewardsDuration).mul(rewardsDuration).add(lockDuration);
     uint idx = userLocks[onBehalfOf].length;
     if (idx == 0 || userLocks[onBehalfOf][idx-1].unlockTime < unlockTime) {
-      userLocks[onBehalfOf].push(LockedBalance({ amount: amount, unlockTime: unlockTime}));
+      userLocks[onBehalfOf].push(LockedBalance({amount: amount, unlockTime: unlockTime}));
     } else {
       userLocks[onBehalfOf][idx-1].amount = userLocks[onBehalfOf][idx-1].amount.add(amount);
     }
@@ -262,7 +234,7 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
         delete locks[i];
       }
     }
-    require(amount > 0, "amount = 0");
+    require(amount > 0, 'amount = 0');
     bal.locked = bal.locked.sub(amount);
     lockedSupply = lockedSupply.sub(amount);
     stakingToken.safeTransfer(msg.sender, amount);
@@ -273,7 +245,7 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   }
 
   function mint(address user, uint amount) external {
-    require(minters[msg.sender], '!minter');
+    require(minters.contains(msg.sender), '!minter');
     if (amount == 0) return;
     _updateReward(user);
     rewardToken.safeTransferFrom(rewardTokenVault, address(this), amount);
@@ -288,7 +260,7 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
     LockedBalance[] storage earnings = userEarnings[user];
     uint idx = earnings.length;
     if (idx == 0 || earnings[idx-1].unlockTime < unlockTime) {
-      earnings.push(LockedBalance({ amount: amount, unlockTime: unlockTime}));
+      earnings.push(LockedBalance({amount: amount, unlockTime: unlockTime}));
     } else {
       earnings[idx-1].amount = earnings[idx-1].amount.add(amount);
     }
@@ -354,11 +326,6 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   function lastTimeRewardApplicable(address _rewardsToken) public view returns (uint) {
     uint periodFinish = rewardData[_rewardsToken].periodFinish;
     return block.timestamp < periodFinish ? block.timestamp : periodFinish;
-  }
-
-  function lastTimeRewardApplicable(address _rewardsToken, uint time) public view returns (uint) {
-    uint periodFinish = rewardData[_rewardsToken].periodFinish;
-    return time < periodFinish ? time : periodFinish;
   }
 
   function _getReward(address[] memory _rewardTokens) internal {
@@ -431,30 +398,11 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
     for (uint i = 0; i < length; i++) {
       address token = rewardTokens[i];
       Reward storage r = rewardData[token];
-      uint lastTime = lastTimeRewardApplicable(token);
-      if(address(migration) != address(0)) {
-        IMigration.Balance[] memory accountBalances = migration.accountBalancesTimed(account, r.lastUpdateTime, lastTime);
-        // console.log('accountBalances', account, token, accountBalances.length);
-        // console.log('Time', r.lastUpdateTime, lastTime);
-        for (uint j = 0; j < accountBalances.length; j++) {
-          uint _rpt = _rewardPerToken(token, totalLockedSupply(accountBalances[j].validUntil));
-          // console.log('Rpt', account, token, _rpt);
-          r.rewardPerTokenStored = _rpt;
-          r.lastUpdateTime = lastTimeRewardApplicable(token, accountBalances[j].validUntil);
-          if (account != address(this)) {
-            // rewards[account][token] = _earned(account, token, balances[account].locked, rpt);
-            rewards[account][token] = _earned(account, token, totalLockedBalance(account, accountBalances[j].validUntil), _rpt);
-            userRewardPerTokenPaid[account][token] = _rpt;
-          }
-        }
-      }
-      uint rpt = _rewardPerToken(token, totalLockedSupply());
-      // console.log('Rpt2', account, token, rpt);
+      uint rpt = _rewardPerToken(token, lockedSupply);
       r.rewardPerTokenStored = rpt;
       r.lastUpdateTime = lastTimeRewardApplicable(token);
       if (account != address(this)) {
-        // rewards[account][token] = _earned(account, token, balances[account].locked, rpt);
-        rewards[account][token] = _earned(account, token, totalLockedBalance(account), rpt);
+        rewards[account][token] = _earned(account, token, balances[account].locked, rpt);
         userRewardPerTokenPaid[account][token] = rpt;
       }
     }
@@ -472,8 +420,12 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
     }
   }
 
-  // Migration
-  function setMigration(IMigration _migration) public onlyOwner {
+  function setMigration(address _migration) external onlyOwner {
     migration = _migration;
+  }
+
+  function updateReward(address account) external {
+    require(msg.sender == migration, "Only migration contract");
+    _updateReward(account);
   }
 }

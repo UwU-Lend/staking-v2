@@ -14,4 +14,6 @@ contract MultiFeeDistributionMock {
   function mint(address user, uint amount) external {
     rewardToken.transfer(user, amount);
   }
+
+  function updateReward(address account) external {}
 }

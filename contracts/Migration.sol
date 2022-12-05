@@ -5,55 +5,33 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/IMigration.sol";
 import "hardhat/console.sol";
 
+interface IDistributor {
+  function updateReward(address account) external;
+}
+
 contract Migration is IMigration, Ownable {
+  IDistributor public distributor;
+  address public updater;
   address[] public accounts;
   mapping(address => uint) public accountsIndexes;
   mapping(address => Balance[]) public accountBalances;
 
-  function balanceOf(address account) external view returns(uint) {
-    return balanceOf(account, block.timestamp);
-  }
-
-  function balanceOf(address account, uint time) public view returns(uint) {
-    uint total = 0;
+  function balanceOf(address account) public view returns(uint) {
+    uint balance = 0;
     for (uint i = 0; i < accountBalances[account].length; i++) {
-      if (accountBalances[account][i].validUntil >= time) {
-        total += accountBalances[account][i].amount;
-      }
+      balance += accountBalances[account][i].amount;
     }
-    return total;
+    return balance;
   }
 
   function totalSupply() external view returns(uint) {
-    return totalSupply(block.timestamp);
-  }
-
-  function totalSupply(uint time) public view returns(uint) {
     uint total = 0;
     for (uint i = 0; i < accounts.length; i++) {
       for (uint j = 0; j < accountBalances[accounts[i]].length; j++) {
-        if (accountBalances[accounts[i]][j].validUntil >= time) {
-          total += accountBalances[accounts[i]][j].amount;
-        }
+        total += accountBalances[accounts[i]][j].amount;
       }
     }
     return total;
-  }
-
-  function accountBalancesTimed(address account, uint from, uint to) external view returns (Balance[] memory balances) {
-    uint length = 0;
-    for (uint i = 0; i < accountBalances[account].length; i++) {
-      if (accountBalances[account][i].validUntil > from && accountBalances[account][i].validUntil >= to) {
-        length++;
-      }
-    }
-    balances = new Balance[](length);
-    uint counter = 0;
-    for (uint i = 0; i < accountBalances[account].length; i++) {
-      if (accountBalances[account][i].validUntil > from && accountBalances[account][i].validUntil >= to) {
-        balances[counter++] = accountBalances[account][i];
-      }
-    }
   }
 
   function setBalances(address account, Balance[] calldata balances) external onlyOwner {
@@ -115,5 +93,33 @@ contract Migration is IMigration, Ownable {
 
   function accountsLength() external view returns(uint) {
     return accounts.length;
+  }
+
+  function removeExpiredBalances(address account) public {
+    for (uint i = 0; i < accountBalances[account].length; i++) {
+      if (accountBalances[account][i].validUntil < block.timestamp) {
+        delete accountBalances[account][i];
+      }
+    }
+  }
+
+  function setDistributor(IDistributor _distributor) external onlyOwner {
+    distributor = _distributor;
+  }
+
+  function setUpdater(address _updater) external onlyOwner {
+    updater = _updater;
+  }
+
+  function update(address account) external onlyUpdater {
+    if(address(distributor) != address(0)) {
+      distributor.updateReward(account);
+      removeExpiredBalances(account);
+    }
+  }
+
+  modifier onlyUpdater() {
+    require(msg.sender == updater, 'only updater');
+    _;
   }
 }
