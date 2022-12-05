@@ -10,7 +10,6 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "./interfaces/IStakingRewards.sol";
 import "./interfaces/IMultiFeeDistribution.sol";
 import "./interfaces/IChefIncentivesController.sol";
-import "./interfaces/IDistributor.sol";
 
 import "hardhat/console.sol";
 
@@ -77,7 +76,7 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   mapping(address => LockedBalance[]) private userEarnings; // vesting UwU tokens
   mapping(address => address) public exitDelegatee;
 
-  constructor(IERC20 _stakingToken, IERC20 _rewardToken, address _rewardTokenVault, IDistributor) Ownable() {
+  constructor(IERC20 _stakingToken, IERC20 _rewardToken, address _rewardTokenVault) Ownable() {
     stakingToken = _stakingToken;
     rewardToken = _rewardToken;
     rewardTokenVault = _rewardTokenVault;
