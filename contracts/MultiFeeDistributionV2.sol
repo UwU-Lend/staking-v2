@@ -10,6 +10,7 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "./interfaces/IStakingRewards.sol";
 import "./interfaces/IMultiFeeDistribution.sol";
 import "./interfaces/IChefIncentivesController.sol";
+import "./interfaces/IMigration.sol";
 
 import "hardhat/console.sol";
 
@@ -61,7 +62,7 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   IERC20 public immutable stakingToken;
   IERC20 public immutable rewardToken;
   address public immutable rewardTokenVault;
-  address public migration;
+  IMigration public migration;
   address public teamRewardVault;
   uint public teamRewardFee = 2000; // 1% = 100
   IStakingRewards public stakingRewards;
@@ -119,6 +120,22 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
     rewardTokens.push(_rewardsToken);
     rewardData[_rewardsToken].lastUpdateTime = block.timestamp;
     rewardData[_rewardsToken].periodFinish = block.timestamp;
+  }
+
+  function totalAccountLocked(address account) public view returns(uint) {
+    if (address(migration) == address(0)) {
+      return balances[account].locked;
+    } else {
+      return balances[account].locked.add(migration.balanceOf(account));
+    }
+  }
+
+  function totalLockedSupply() public view returns(uint) {
+    if (address(migration) == address(0)) {
+      return lockedSupply;
+    } else {
+      return lockedSupply.add(migration.totalSupply());
+    }
   }
 
   // Information on a user's locked balances
@@ -397,11 +414,13 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
     for (uint i = 0; i < length; i++) {
       address token = rewardTokens[i];
       Reward storage r = rewardData[token];
-      uint rpt = _rewardPerToken(token, lockedSupply);
+      // uint rpt = _rewardPerToken(token, lockedSupply);
+      uint rpt = _rewardPerToken(token, totalLockedSupply());
       r.rewardPerTokenStored = rpt;
       r.lastUpdateTime = lastTimeRewardApplicable(token);
       if (account != address(this)) {
-        rewards[account][token] = _earned(account, token, balances[account].locked, rpt);
+        // rewards[account][token] = _earned(account, token, balances[account].locked, rpt);
+        rewards[account][token] = _earned(account, token, totalAccountLocked(account), rpt);
         userRewardPerTokenPaid[account][token] = rpt;
       }
     }
@@ -419,12 +438,12 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
     }
   }
 
-  function setMigration(address _migration) external onlyOwner {
+  function setMigration(IMigration _migration) external onlyOwner {
     migration = _migration;
   }
 
   function updateReward(address account) external {
-    require(msg.sender == migration, "Only migration contract");
+    require(msg.sender == address(migration), "Only migration contract");
     _updateReward(account);
   }
 }
