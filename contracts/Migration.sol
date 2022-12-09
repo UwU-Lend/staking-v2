@@ -95,7 +95,7 @@ contract Migration is IMigration, Ownable {
     return accounts.length;
   }
 
-  function removeExpiredBalances(address account) public {
+  function _removeExpiredBalances(address account) private {
     for (uint i = 0; i < accountBalances[account].length; i++) {
       if (accountBalances[account][i].validUntil < block.timestamp) {
         delete accountBalances[account][i];
@@ -114,7 +114,7 @@ contract Migration is IMigration, Ownable {
   function update(address account) external onlyUpdater {
     if(address(distributor) != address(0)) {
       distributor.updateReward(account);
-      removeExpiredBalances(account);
+      _removeExpiredBalances(account);
     }
   }
 

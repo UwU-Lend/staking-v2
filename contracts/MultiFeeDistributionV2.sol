@@ -206,7 +206,7 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
     rewards = new RewardData[](rewardTokens.length);
     for (uint i = 0; i < rewards.length; i++) {
       rewards[i].token = rewardTokens[i];
-      rewards[i].amount = _earned(account, rewards[i].token, balances[account].locked, _rewardPerToken(rewardTokens[i], lockedSupply)).div(1e12);
+      rewards[i].amount = _earned(account, rewards[i].token, totalAccountLocked(account), _rewardPerToken(rewardTokens[i], totalLockedSupply())).div(1e12);
     }
     return rewards;
   }

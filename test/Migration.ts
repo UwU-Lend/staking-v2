@@ -57,8 +57,8 @@ describe("Migration", () => {
   });
   describe("RemoveExpiredBalances", () => {
     it("Should be able remove balances", async () => {
-      const {migration} = await loadFixture(migrationFixture);
-      const [account1, account2] = await ethers.getSigners();
+      const {migration, distributor} = await loadFixture(migrationFixture);
+      const [account1, account2, updater] = await ethers.getSigners();
       const latest: number = await time.latest();
       const balances1: IMigration.BalanceStruct[] = [{
         amount: 100,
@@ -81,13 +81,15 @@ describe("Migration", () => {
         validUntil: latest + 86400 * 3,
       }];
       await migration.setBalancesBatch([account1.address, account2.address], [balances1, balances2]);
-      await migration.removeExpiredBalances(account1.address);
-      await migration.removeExpiredBalances(account2.address);
+      await migration.setDistributor(distributor.address);
+      await migration.setUpdater(updater.address);
+      await migration.connect(updater).update(account1.address);
+      await migration.connect(updater).update(account2.address);
       expect(await migration.balanceOf(account1.address)).to.be.equals(BigNumber.from(600));
       expect(await migration.balanceOf(account2.address)).to.be.equals(BigNumber.from(1500));
       await time.increase(86400 * 2);
-      await migration.removeExpiredBalances(account1.address);
-      await migration.removeExpiredBalances(account2.address);
+      await migration.connect(updater).update(account1.address);
+      await migration.connect(updater).update(account2.address);
       expect(await migration.balanceOf(account1.address)).to.be.equals(BigNumber.from(300));
       expect(await migration.balanceOf(account2.address)).to.be.equals(BigNumber.from(600));
     });
@@ -126,6 +128,7 @@ describe("Migration", () => {
       expect(await migration.balanceOf(account1.address)).to.be.equals(BigNumber.from(300));
       expect(await migration.balanceOf(account2.address)).to.be.equals(BigNumber.from(600));
     });
+    // it("Should be has no effect after call method twice", async () => {
   });
   describe("SetBalances", () => {
     it("Only the owner can set the balances", async () => {
@@ -474,8 +477,8 @@ describe("Migration", () => {
       expect(await migration.balanceOf(account2.address)).to.be.equals(BigNumber.from(1500));
     });
     it("Should be the right balance after remove expired balances", async () => {
-      const {migration} = await loadFixture(migrationFixture);
-      const [account1, account2] = await ethers.getSigners();
+      const {migration, distributor} = await loadFixture(migrationFixture);
+      const [account1, account2, updater] = await ethers.getSigners();
       const latest: number = await time.latest();
       const balances1: IMigration.BalanceStruct[] = [{
         amount: 100,
@@ -498,9 +501,11 @@ describe("Migration", () => {
         validUntil: latest + 86400 * 3,
       }];
       await migration.setBalancesBatch([account1.address, account2.address], [balances1, balances2]);
+      await migration.setDistributor(distributor.address);
+      await migration.setUpdater(updater.address);
       await time.increase(86400 * 2);
-      await migration.removeExpiredBalances(account1.address);
-      await migration.removeExpiredBalances(account2.address);
+      await migration.connect(updater).update(account1.address);
+      await migration.connect(updater).update(account2.address);
       expect(await migration.balanceOf(account1.address)).to.be.equals(BigNumber.from(300));
       expect(await migration.balanceOf(account2.address)).to.be.equals(BigNumber.from(600));
     });
@@ -535,8 +540,8 @@ describe("Migration", () => {
       expect(totalSupply).to.be.equals(BigNumber.from(2100));
     });
     it("Should be the right total supply after remove expired balances", async () => {
-      const {migration} = await loadFixture(migrationFixture);
-      const [account1, account2] = await ethers.getSigners();
+      const {migration, distributor} = await loadFixture(migrationFixture);
+      const [account1, account2, updater] = await ethers.getSigners();
       const latest: number = await time.latest();
       const balances1: IMigration.BalanceStruct[] = [{
         amount: 100,
@@ -559,9 +564,11 @@ describe("Migration", () => {
         validUntil: latest + 86400 * 3,
       }];
       await migration.setBalancesBatch([account1.address, account2.address], [balances1, balances2]);
+      await migration.setDistributor(distributor.address);
+      await migration.setUpdater(updater.address);
       await time.increase(86400 * 2);
-      await migration.removeExpiredBalances(account1.address);
-      await migration.removeExpiredBalances(account2.address);
+      await migration.connect(updater).update(account1.address);
+      await migration.connect(updater).update(account2.address);
       const totalSupply: BigNumber = await migration.totalSupply();
       expect(totalSupply).to.be.equals(BigNumber.from(900));
     });
