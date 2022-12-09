@@ -25,6 +25,7 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   event ExitedEarly(address indexed user, uint amount, uint penaltyAmount);
   event Withdrawn(address indexed user, uint amount);
   event RewardPaid(address indexed user, address indexed rewardsToken, uint reward);
+  event PublicExit();
 
   struct Reward {
     uint periodFinish;
@@ -63,6 +64,7 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   IERC20 public immutable rewardToken;
   address public immutable rewardTokenVault;
   IMigration public migration;
+  bool public migrationAreSet;
   address public teamRewardVault;
   uint public teamRewardFee = 2000; // 1% = 100
   IStakingRewards public stakingRewards;
@@ -70,6 +72,7 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   mapping(address => Reward) public rewardData;
 
   uint public lockedSupply;
+  bool public publicExitAreSet;
 
   // Private mappings for balance data
   mapping(address => Balances) private balances;
@@ -240,7 +243,7 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
     Balances storage bal = balances[msg.sender];
     uint amount;
     uint length = locks.length;
-    if (locks[length-1].unlockTime <= block.timestamp) {
+    if (locks[length-1].unlockTime <= block.timestamp || publicExitAreSet) {
       amount = bal.locked;
       delete userLocks[msg.sender];
     } else {
@@ -439,7 +442,22 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   }
 
   function setMigration(IMigration _migration) external onlyOwner {
+    require(!migrationAreSet, "migration are set");
+    require(lockedSupply == 0, "has lacked token");
     migration = _migration;
+    migrationAreSet = true;
+  }
+
+  function removeMigration() external onlyOwner {
+    require(address(migration) != address(0), "always zero address");
+    require(migration.totalSupply() == 0, "total supply is not zero");
+    delete migration;
+  }
+
+  function publicExit() external onlyOwner {
+    require(!publicExitAreSet, "public exit are set");
+    publicExitAreSet = true;
+    emit PublicExit();
   }
 
   function updateReward(address account) external {

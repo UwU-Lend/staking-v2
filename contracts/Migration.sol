@@ -7,6 +7,7 @@ import "hardhat/console.sol";
 
 interface IDistributor {
   function updateReward(address account) external;
+  function lockedSupply() external view returns(uint);
 }
 
 contract Migration is IMigration, Ownable {
@@ -15,6 +16,7 @@ contract Migration is IMigration, Ownable {
   address[] public accounts;
   mapping(address => uint) public accountsIndexes;
   mapping(address => Balance[]) public accountBalances;
+  bool private distributorAreSet;
 
   function balanceOf(address account) public view returns(uint) {
     uint balance = 0;
@@ -34,7 +36,7 @@ contract Migration is IMigration, Ownable {
     return total;
   }
 
-  function setBalances(address account, Balance[] calldata balances) external onlyOwner {
+  function setBalances(address account, Balance[] calldata balances) external onlyDistributorInactive onlyOwner {
     if (accountBalances[account].length > 0) {
       delete accountBalances[account];
     }
@@ -47,7 +49,7 @@ contract Migration is IMigration, Ownable {
     }
   }
 
-  function removeBalances(address account) external onlyOwner {
+  function removeBalances(address account) external onlyDistributorInactive onlyOwner {
     delete accountBalances[account];
     if (accountsIndexes[account] > 0) {
       accounts[accountsIndexes[account] - 1] = accounts[accounts.length - 1];
@@ -57,7 +59,7 @@ contract Migration is IMigration, Ownable {
     }
   }
 
-  function setBalancesBatch(address[] calldata _accounts, Balance[][] calldata _balancesBatch) external onlyOwner {
+  function setBalancesBatch(address[] calldata _accounts, Balance[][] calldata _balancesBatch) external onlyDistributorInactive onlyOwner {
     require(_accounts.length > 0, 'accounts array must not be empty');
     require(_balancesBatch.length > 0, 'balancesBatch array must not be empty');
     require(_accounts.length == _balancesBatch.length, 'accounts and balances array must be the same length');
@@ -77,7 +79,7 @@ contract Migration is IMigration, Ownable {
     }
   }
 
-  function removeBalancesBatch(address[] calldata _accounts) external onlyOwner {
+  function removeBalancesBatch(address[] calldata _accounts) external onlyDistributorInactive onlyOwner {
     require(_accounts.length > 0, 'accounts array must not be empty');
     for (uint i = 0; i < _accounts.length; i++) {
       address account = _accounts[i];
@@ -104,7 +106,9 @@ contract Migration is IMigration, Ownable {
   }
 
   function setDistributor(IDistributor _distributor) external onlyOwner {
+    require(!distributorAreSet, 'distributor already set');
     distributor = _distributor;
+    distributorAreSet = true;
   }
 
   function setUpdater(address _updater) external onlyOwner {
@@ -120,6 +124,12 @@ contract Migration is IMigration, Ownable {
 
   modifier onlyUpdater() {
     require(msg.sender == updater, 'only updater');
+    _;
+  }
+
+  modifier onlyDistributorInactive() {
+    require(address(distributor) != address(0), 'distributor is zero address');
+    require(distributor.lockedSupply() == 0, 'distributor is active');
     _;
   }
 }
