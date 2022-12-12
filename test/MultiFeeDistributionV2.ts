@@ -778,6 +778,119 @@ describe("MultiFeeDistributionV2", () => {
       expect(migrationAddress2).to.be.equals(newMigration.address);
     });
   });
+  describe("RemoveMigration", () => {
+    it("Should be reverted when not owner called method", async () => {
+      const [owner, notOwner] = await ethers.getSigners();
+      const { migration, distributorV2 } = await loadFixture(MultiFeeDistributionV2Fixture);
+      await distributorV2.setMigration(migration.address);
+      await expect(distributorV2.connect(notOwner).removeMigration()).to.be.reverted;
+      await expect(distributorV2.connect(owner).removeMigration()).to.be.not.reverted;
+    });
+    it("Should be able remove migration", async () => {
+      const { migration, distributorV2 } = await loadFixture(MultiFeeDistributionV2Fixture);
+      await distributorV2.setMigration(migration.address);
+      const migrationAddress1: string = await distributorV2.migration();
+      await distributorV2.removeMigration();
+      const migrationAddress2: string = await distributorV2.migration();
+      expect(migrationAddress1).to.be.equals(migration.address);
+      expect(migrationAddress2).to.be.equals(ZERO_ADDRESS);
+    });
+    it("Should be reverted when remove early (totalSupply != 0)", async () => {
+      const [, account1, account2, updater ] = await ethers.getSigners();
+      const { migration, distributorV2 } = await loadFixture(MultiFeeDistributionV2Fixture);
+      const latest: number = await time.latest();
+      const balances1: IMigration.BalanceStruct[] = [{
+        amount: 100,
+        validUntil: latest + 86400 * 1,
+      }, {
+        amount: 200,
+        validUntil: latest + 86400 * 2,
+      }, {
+        amount: 300,
+        validUntil: latest + 86400 * 3,
+      }];
+      const balances2: IMigration.BalanceStruct[] = [{
+        amount: 400,
+        validUntil: latest + 86400 * 1,
+      }, {
+        amount: 500,
+        validUntil: latest + 86400 * 2,
+      }, {
+        amount: 600,
+        validUntil: latest + 86400 * 3,
+      }];
+      await migration.setDistributor(distributorV2.address);
+      await migration.setBalancesBatch([account1.address, account2.address], [balances1, balances2]);
+      await migration.setUpdater(updater.address);
+      await distributorV2.setMigration(migration.address);
+      await expect(distributorV2.removeMigration()).to.be.reverted;
+    });
+    it("Should be execute correct", async () => {
+      const [, account1, account2, updater ] = await ethers.getSigners();
+      const { migration, distributorV2 } = await loadFixture(MultiFeeDistributionV2Fixture);
+      const latest: number = await time.latest();
+      const balances1: IMigration.BalanceStruct[] = [{
+        amount: 100,
+        validUntil: latest + 86400 * 1,
+      }, {
+        amount: 200,
+        validUntil: latest + 86400 * 2,
+      }, {
+        amount: 300,
+        validUntil: latest + 86400 * 3,
+      }];
+      const balances2: IMigration.BalanceStruct[] = [{
+        amount: 400,
+        validUntil: latest + 86400 * 1,
+      }, {
+        amount: 500,
+        validUntil: latest + 86400 * 2,
+      }, {
+        amount: 600,
+        validUntil: latest + 86400 * 3,
+      }];
+      await migration.setDistributor(distributorV2.address);
+      await migration.setBalancesBatch([account1.address, account2.address], [balances1, balances2]);
+      await migration.setUpdater(updater.address);
+      await distributorV2.setMigration(migration.address);
+      await time.increase(86400 * 7);
+      await migration.connect(updater).update(account1.address);
+      await migration.connect(updater).update(account2.address);
+      await expect(distributorV2.removeMigration()).to.be.not.reverted;
+      expect(await distributorV2.migration()).to.be.equals(ZERO_ADDRESS);
+    });
+  });
+  describe("PublicExit", () => {
+    it("Should be reverted when not owner called method", async () => {
+      const [owner, notOwner] = await ethers.getSigners();
+      const { distributorV2 } = await loadFixture(MultiFeeDistributionV2Fixture);
+      await expect(distributorV2.connect(notOwner).publicExit()).to.be.reverted;
+      await expect(distributorV2.connect(owner).publicExit()).to.be.not.reverted;
+    });
+    it("Should be reverted when call method twice", async () => {
+      const { distributorV2 } = await loadFixture(MultiFeeDistributionV2Fixture);
+      await expect(distributorV2.publicExit()).to.be.not.reverted;
+      await expect(distributorV2.publicExit()).to.be.reverted;
+    });
+    it("Should be able withdrawal locked tokens", async () => {
+      const [, account1, account2] = await ethers.getSigners();
+      const { migration, distributorV2, uToken, stakingToken, stakingTokenHolder } = await loadFixture(MultiFeeDistributionV2Fixture);
+      const lockAmountInWei1 = ethers.utils.parseEther("100");
+      const lockAmountInWei2 = ethers.utils.parseEther("200");
+      await distributorV2.setMigration(migration.address);
+      await stakingToken.connect(stakingTokenHolder).transfer(account1.address, lockAmountInWei1);
+      await stakingToken.connect(stakingTokenHolder).transfer(account2.address, lockAmountInWei2);
+      await stakingToken.connect(account1).approve(distributorV2.address, lockAmountInWei1);
+      await stakingToken.connect(account2).approve(distributorV2.address, lockAmountInWei2);
+      await distributorV2.connect(account1).lock(lockAmountInWei1, account1.address);
+      await distributorV2.connect(account2).lock(lockAmountInWei2, account2.address);
+      await distributorV2.publicExit();
+      await distributorV2.connect(account1).withdrawExpiredLocks();
+      await distributorV2.connect(account2).withdrawExpiredLocks();
+      expect(await stakingToken.balanceOf(account1.address)).to.be.equal(lockAmountInWei1);
+      expect(await stakingToken.balanceOf(account2.address)).to.be.equal(lockAmountInWei2);
+    });
+  });
   describe("Lock -> MintToTreasury -> GetReward", () => {
     describe("All LP tokens listed on migration contract", () => {
       it("Should be earned the right utoken amount", async () => {
