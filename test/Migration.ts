@@ -4,7 +4,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { IMigration } from "../typechain-types/contracts/Migration.sol/Migration";
 import { Migration } from "../typechain-types";
 import { MultiFeeDistributionV2Fixture } from "./fixtures/multi-fee-distribution-v2.fixture";
-import balancesBatchEntries from "../balances-batch-entries.json";
+import balancesBatchEntries from "../balances-batch.json";
 import { ethers } from "hardhat";
 import { expect } from "chai";
 import { migrationFixture } from "./fixtures/migration.fixture";

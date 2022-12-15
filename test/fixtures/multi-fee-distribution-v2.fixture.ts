@@ -1,7 +1,7 @@
 import { IERC20, IncentivesControllerMock, IncentivesControllerMock__factory, Migration, Migration__factory, MultiFeeDistributionV2, MultiFeeDistributionV2__factory } from '../../typechain-types';
 
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import balancesBatchEntries from "../../balances-batch-entries.json";
+import balancesBatchEntries from "../../balances-batch.json";
 import distributorABI from '../../abis/MultiFeeDistribution.json';
 import { ethers } from 'hardhat';
 
