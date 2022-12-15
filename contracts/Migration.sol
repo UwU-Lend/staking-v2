@@ -18,6 +18,12 @@ contract Migration is IMigration, Ownable {
   mapping(address => Balance[]) public accountBalances;
   bool private distributorAreSet;
 
+  struct BalanceWithAccount {
+    address account;
+    uint amount;
+    uint validUntil;
+  }
+
   function balanceOf(address account) public view returns(uint) {
     uint balance = 0;
     for (uint i = 0; i < accountBalances[account].length; i++) {
@@ -77,6 +83,25 @@ contract Migration is IMigration, Ownable {
         accountsIndexes[account] = accounts.length;
       }
     }
+  }
+
+  function addBalancesBatch(BalanceWithAccount[] calldata batch) external onlyDistributorInactive onlyOwner {
+    for (uint i = 0; i < batch.length; i++) {
+      BalanceWithAccount memory b = batch[i];
+      accountBalances[b.account].push(Balance(b.amount, b.validUntil));
+      if (accountsIndexes[b.account] == 0) {
+        accounts.push(b.account);
+        accountsIndexes[b.account] = accounts.length;
+      }
+    }
+  }
+
+  function removeAllBalances() external  onlyDistributorInactive onlyOwner {
+    for (uint i = 0; i < accounts.length; i++) {
+      delete accountBalances[accounts[i]];
+      delete accountsIndexes[accounts[i]];
+    }
+    delete accounts;
   }
 
   function removeBalancesBatch(address[] calldata _accounts) external onlyDistributorInactive onlyOwner {

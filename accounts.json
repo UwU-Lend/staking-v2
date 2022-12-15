@@ -1,0 +1,2170 @@
+[
+  {
+      "address": "0xDBc2b3329aFBE0DCD9FF4bE888915b7ec30680Db",
+      "balances": {
+          "total": "10000000000000000",
+          "unlockable": "10000000000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:42.960Z"
+  },
+  {
+      "address": "0xae4DD12A1012C3b10f8AB8276218C39a7a1812f0",
+      "balances": {
+          "total": "80000000000000000",
+          "unlockable": "80000000000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:43.904Z"
+  },
+  {
+      "address": "0x050aEd76fa793E384990688E2aEB8f7DB4a77EE5",
+      "balances": {
+          "total": "22166850350000000000",
+          "unlockable": "22166850350000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:44.837Z"
+  },
+  {
+      "address": "0xFc9b9eA77d243e7ABd17C751EFfc1000C4f0De1B",
+      "balances": {
+          "total": "2507419830000000000",
+          "unlockable": "2507419830000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:45.320Z"
+  },
+  {
+      "address": "0x42a528b769cfB8E4720919446919b5848d6bB458",
+      "balances": {
+          "total": "202865066000000000",
+          "unlockable": "202865066000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:45.838Z"
+  },
+  {
+      "address": "0x48388a42C5D1e6F32F039dd8a19a7f705D413031",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:46.342Z"
+  },
+  {
+      "address": "0x543c437C552a1CaDe2256affC17EAcE5e5245D1e",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:46.865Z"
+  },
+  {
+      "address": "0xF862c0e523be3a8C97D3a587eD60E613613c9467",
+      "balances": {
+          "total": "83740203940000000000",
+          "unlockable": "68541452040000000000",
+          "locked": "15198751900000000000",
+          "lockData": [
+              {
+                  "amount": "14046603400000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "1152148500000000000",
+                  "validUntil": "1671667200"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:47.415Z"
+  },
+  {
+      "address": "0x6F278Ce76BA5ED31Fd9bE646D074863e126836E9",
+      "balances": {
+          "total": "623317030000000000",
+          "unlockable": "623317030000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:47.963Z"
+  },
+  {
+      "address": "0x555187752Ef6d73758862B5d364AAB362c996d0e",
+      "balances": {
+          "total": "272931440000000000",
+          "unlockable": "272931440000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:48.505Z"
+  },
+  {
+      "address": "0x410e4A3e7F3E216BeE991CA0100a829630920702",
+      "balances": {
+          "total": "6679755940000000000",
+          "unlockable": "6679755940000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:49.047Z"
+  },
+  {
+      "address": "0x548efCE69bb82a16f3911a86a65384327c99c3Ab",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:49.607Z"
+  },
+  {
+      "address": "0xB70c4B248dA919dCE231a55c9315587717161456",
+      "balances": {
+          "total": "48250727000000000",
+          "unlockable": "48250727000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:50.166Z"
+  },
+  {
+      "address": "0xE9e697147cf7c669b8409608002836803b62e92f",
+      "balances": {
+          "total": "200704460000000000",
+          "unlockable": "200704460000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:50.716Z"
+  },
+  {
+      "address": "0x1b21A858b515c6D9483d93254Fd468c316159F51",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:51.259Z"
+  },
+  {
+      "address": "0x11c843e581104238359E383337546E022e60e20a",
+      "balances": {
+          "total": "61260080900000000000",
+          "unlockable": "29434489100000000000",
+          "locked": "31825591800000000000",
+          "lockData": [
+              {
+                  "amount": "3661905000000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "3090421600000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "3386848000000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "9583474800000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "6584332200000000000",
+                  "validUntil": "1674086400"
+              },
+              {
+                  "amount": "5518610200000000000",
+                  "validUntil": "1674691200"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:51.811Z"
+  },
+  {
+      "address": "0x7ca2ed407FBEF61e795c4c49c5E314C807b3f125",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:52.384Z"
+  },
+  {
+      "address": "0xd54a7C2193d35cD1A0D8C45E0B43bF861AABA6B4",
+      "balances": {
+          "total": "96868570000000000",
+          "unlockable": "96868570000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:52.927Z"
+  },
+  {
+      "address": "0x862870ec81d9F36AcB6Bd7a2a46b18F8f25A91F4",
+      "balances": {
+          "total": "157281620000000000",
+          "unlockable": "157281620000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:53.495Z"
+  },
+  {
+      "address": "0xDE3F927B523741583e392E0205a610a5d107F756",
+      "balances": {
+          "total": "34254380000000000",
+          "unlockable": "34254380000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:54.028Z"
+  },
+  {
+      "address": "0xf46213ba14D9f39db0979fba256Eac0983105e5C",
+      "balances": {
+          "total": "879448410000000000",
+          "unlockable": "761186780000000000",
+          "locked": "118261630000000000",
+          "lockData": [
+              {
+                  "amount": "118261630000000000",
+                  "validUntil": "1671062400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:54.580Z"
+  },
+  {
+      "address": "0xd1C1d7adE57144F0b7BFAd2aaf3e99d26FA89B29",
+      "balances": {
+          "total": "7262115000000000000",
+          "unlockable": "7262115000000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:55.144Z"
+  },
+  {
+      "address": "0x702D6DeF95d59E31ebA8420372821c2E49F2D607",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:55.712Z"
+  },
+  {
+      "address": "0x567cf7713D04f8F3671450145C5a25BBd319361D",
+      "balances": {
+          "total": "575865260000000000",
+          "unlockable": "575865260000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:56.281Z"
+  },
+  {
+      "address": "0xeb308d89b1CF09E04D0838B4618F115a5C4B2083",
+      "balances": {
+          "total": "56716491080000000000",
+          "unlockable": "24098903280000000000",
+          "locked": "32617587800000000000",
+          "lockData": [
+              {
+                  "amount": "11988057300000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "7752149500000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "12877381000000000000",
+                  "validUntil": "1673481600"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:56.883Z"
+  },
+  {
+      "address": "0x51115F73F927fCf13ef6f27f6bAA170156d44489",
+      "balances": {
+          "total": "186764770000000000",
+          "unlockable": "186764770000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:57.495Z"
+  },
+  {
+      "address": "0x3768e6c39A365Bb4be13bf89fFAB4B7471455F3e",
+      "balances": {
+          "total": "257576588000000000",
+          "unlockable": "257576588000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:58.150Z"
+  },
+  {
+      "address": "0x3ed4e3fD8DDF1309dE0021d8309Ede7f77E09512",
+      "balances": {
+          "total": "1452577300000000000",
+          "unlockable": "1452577300000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:58.621Z"
+  },
+  {
+      "address": "0xB2F293E729a01a4c6f65984B876b85F1feeD7B10",
+      "balances": {
+          "total": "2937328500000000000",
+          "unlockable": "2937328500000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:59.002Z"
+  },
+  {
+      "address": "0xE005758aE8b9Eb66E816712E714e64f11567E73A",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:59.362Z"
+  },
+  {
+      "address": "0xc0e8de0d4262b3Fef33169088A483061A11850eB",
+      "balances": {
+          "total": "1081131790000000000",
+          "unlockable": "1081131790000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:22:59.736Z"
+  },
+  {
+      "address": "0xA7B7f3550f9B9611D12D6cF9E58FDBe63b7c4F86",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:00.106Z"
+  },
+  {
+      "address": "0x6764090259F95640563E999e386e742C2935A633",
+      "balances": {
+          "total": "93439091400000000000",
+          "unlockable": "55792662800000000000",
+          "locked": "37646428600000000000",
+          "lockData": [
+              {
+                  "amount": "26489316600000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "11157112000000000000",
+                  "validUntil": "1672272000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:00.472Z"
+  },
+  {
+      "address": "0x120f32Fe98DbBAa57880171F5e82b51560f3c6A6",
+      "balances": {
+          "total": "15181433940000000000",
+          "unlockable": "7066079570000000000",
+          "locked": "8115354370000000000",
+          "lockData": [
+              {
+                  "amount": "588107170000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "1955131300000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "2946674000000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "2625441900000000000",
+                  "validUntil": "1674691200"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:00.889Z"
+  },
+  {
+      "address": "0x31d3243CfB54B34Fc9C73e1CB1137124bD6B13E1",
+      "balances": {
+          "total": "2106448570100000000000",
+          "unlockable": "295234391100000000000",
+          "locked": "1811214179000000000000",
+          "lockData": [
+              {
+                  "amount": "157602520000000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "224763110000000000000",
+                  "validUntil": "1672876800"
+              },
+              {
+                  "amount": "265914513000000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "275562917000000000000",
+                  "validUntil": "1674086400"
+              },
+              {
+                  "amount": "432094727000000000000",
+                  "validUntil": "1674691200"
+              },
+              {
+                  "amount": "455276392000000000000",
+                  "validUntil": "1675296000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:01.273Z"
+  },
+  {
+      "address": "0xb957DccaA1CCFB1eB78B495B499801D591d8a403",
+      "balances": {
+          "total": "683866510000000000",
+          "unlockable": "153731170000000000",
+          "locked": "530135340000000000",
+          "lockData": [
+              {
+                  "amount": "530135340000000000",
+                  "validUntil": "1671667200"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:02.208Z"
+  },
+  {
+      "address": "0xc5468b7EF6614d3bCc7E9bFcAeEF19a9263D1035",
+      "balances": {
+          "total": "5494808000000000000",
+          "unlockable": "5494808000000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:02.588Z"
+  },
+  {
+      "address": "0x176E2042a510d00aa69aA02E5f24D438CC6d8aB2",
+      "balances": {
+          "total": "4967530635000000000",
+          "unlockable": "3670006729000000000",
+          "locked": "1297523906000000000",
+          "lockData": [
+              {
+                  "amount": "79975021000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "64237405000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "798423050000000000",
+                  "validUntil": "1672876800"
+              },
+              {
+                  "amount": "232773020000000000",
+                  "validUntil": "1674086400"
+              },
+              {
+                  "amount": "122115410000000000",
+                  "validUntil": "1675296000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:02.985Z"
+  },
+  {
+      "address": "0xf4F33035be6759419df87EE1665eC59827003347",
+      "balances": {
+          "total": "21558911050000000000",
+          "unlockable": "9017607300000000000",
+          "locked": "12541303750000000000",
+          "lockData": [
+              {
+                  "amount": "462060550000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "6062526200000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "6016717000000000000",
+                  "validUntil": "1672272000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:03.383Z"
+  },
+  {
+      "address": "0xebC1b0618bfb9215Fd154F6DDdFF425ea38B6787",
+      "balances": {
+          "total": "751480900000000000",
+          "unlockable": "751480900000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:03.773Z"
+  },
+  {
+      "address": "0xebd9dc7FB828265E913b6060461222e9595D7Dc9",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:04.132Z"
+  },
+  {
+      "address": "0xd543792AeC7f9F1007447aeb707404C72E75540F",
+      "balances": {
+          "total": "165386330000000000",
+          "unlockable": "165386330000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:04.498Z"
+  },
+  {
+      "address": "0x67f72412A592D066A2e688e62664116dEAbEab29",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:04.886Z"
+  },
+  {
+      "address": "0xD5fF53f48F14e9409B581e41a4cDDFe0E97Dc724",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:05.273Z"
+  },
+  {
+      "address": "0xB5483CAc95cd6fd91993A151a008009F8F451861",
+      "balances": {
+          "total": "127242873830000000000",
+          "unlockable": "48007079330000000000",
+          "locked": "79235794500000000000",
+          "lockData": [
+              {
+                  "amount": "14787879500000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "2434873500000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "27539770600000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "14923046400000000000",
+                  "validUntil": "1672876800"
+              },
+              {
+                  "amount": "5418977500000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "6435464100000000000",
+                  "validUntil": "1674691200"
+              },
+              {
+                  "amount": "7695782900000000000",
+                  "validUntil": "1675296000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:05.653Z"
+  },
+  {
+      "address": "0x36f8A9eBb4479B1b877920b4cE0a11Ee25C29a8b",
+      "balances": {
+          "total": "42816688456691202000",
+          "unlockable": "42816688400000000000",
+          "locked": "56691202000",
+          "lockData": [
+              {
+                  "amount": "56691202000",
+                  "validUntil": "1674086400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:06.030Z"
+  },
+  {
+      "address": "0xc47faE56f3702737B69ed615950c01217ec5C7C8",
+      "balances": {
+          "total": "210410148493020635396",
+          "unlockable": "117150588396414680000",
+          "locked": "93259560096605955396",
+          "lockData": [
+              {
+                  "amount": "13221270000000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "24869395000000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "48154320000000000000",
+                  "validUntil": "1672876800"
+              },
+              {
+                  "amount": "2409003481295884740",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "4605571615310070656",
+                  "validUntil": "1674086400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:06.444Z"
+  },
+  {
+      "address": "0xdCA147313e4E4dB2f3cC73895616605Bac389C0F",
+      "balances": {
+          "total": "12363654600000000000",
+          "unlockable": "12363654600000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:07.695Z"
+  },
+  {
+      "address": "0x041d7710eb5B759cA179FcbF8A5F9b534E6a4C21",
+      "balances": {
+          "total": "59314436000000000",
+          "unlockable": "59314436000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:08.071Z"
+  },
+  {
+      "address": "0xC6Be36e90aA068526680f4E9C1e4F639cf0f5C51",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:08.443Z"
+  },
+  {
+      "address": "0xf75088B5870B134e350fd010e449Dc4E004d81e2",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:08.816Z"
+  },
+  {
+      "address": "0x5DD596C901987A2b28C38A9C1DfBf86fFFc15d77",
+      "balances": {
+          "total": "4694350778700000000000",
+          "unlockable": "535144943700000000000",
+          "locked": "4159205835000000000000",
+          "lockData": [
+              {
+                  "amount": "406541484000000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "311754447000000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "1646890750000000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "435203364000000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "360393986000000000000",
+                  "validUntil": "1674086400"
+              },
+              {
+                  "amount": "220348949000000000000",
+                  "validUntil": "1674691200"
+              },
+              {
+                  "amount": "778072855000000000000",
+                  "validUntil": "1675296000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:09.601Z"
+  },
+  {
+      "address": "0xAf79312EB821871208ac76A80c8E282f8796964e",
+      "balances": {
+          "total": "20931100000000000",
+          "unlockable": "20931100000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:09.951Z"
+  },
+  {
+      "address": "0xc9Ecb3021fcBe7b2fE22EDc81CB25B7DbdA4631c",
+      "balances": {
+          "total": "3103308540000000000",
+          "unlockable": "2309925490000000000",
+          "locked": "793383050000000000",
+          "lockData": [
+              {
+                  "amount": "230768360000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "562614690000000000",
+                  "validUntil": "1674086400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:10.334Z"
+  },
+  {
+      "address": "0x038201e05D140124952E34E31665420489288338",
+      "balances": {
+          "total": "16816576170000000000",
+          "unlockable": "6678866300000000000",
+          "locked": "10137709870000000000",
+          "lockData": [
+              {
+                  "amount": "1134686600000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "1102192100000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "1091495800000000000",
+                  "validUntil": "1672876800"
+              },
+              {
+                  "amount": "2095089500000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "999053370000000000",
+                  "validUntil": "1674086400"
+              },
+              {
+                  "amount": "1891569900000000000",
+                  "validUntil": "1674691200"
+              },
+              {
+                  "amount": "1823622600000000000",
+                  "validUntil": "1675296000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:10.744Z"
+  },
+  {
+      "address": "0x7BFEe91193d9Df2Ac0bFe90191D40F23c773C060",
+      "balances": {
+          "total": "43035483660000000000",
+          "unlockable": "14793385960000000000",
+          "locked": "28242097700000000000",
+          "lockData": [
+              {
+                  "amount": "2632273310000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "4617681190000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "1604477800000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "8559362400000000000",
+                  "validUntil": "1672876800"
+              },
+              {
+                  "amount": "2888235300000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "5640530200000000000",
+                  "validUntil": "1674086400"
+              },
+              {
+                  "amount": "2299537500000000000",
+                  "validUntil": "1674691200"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:11.134Z"
+  },
+  {
+      "address": "0x6005E721373B0f025A0152c7C2f94c97Fa56F246",
+      "balances": {
+          "total": "75257471570000000000",
+          "unlockable": "4332447770000000000",
+          "locked": "70925023800000000000",
+          "lockData": [
+              {
+                  "amount": "2606581900000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "4323254800000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "9197939000000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "21504623100000000000",
+                  "validUntil": "1672876800"
+              },
+              {
+                  "amount": "9615095900000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "18109917200000000000",
+                  "validUntil": "1674086400"
+              },
+              {
+                  "amount": "1994859100000000000",
+                  "validUntil": "1674691200"
+              },
+              {
+                  "amount": "3572752800000000000",
+                  "validUntil": "1675296000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:11.537Z"
+  },
+  {
+      "address": "0xfC5911bba72C2bFe0C8c2752C11a51F5ab92aaEc",
+      "balances": {
+          "total": "1941450410000000000",
+          "unlockable": "0",
+          "locked": "1941450410000000000",
+          "lockData": [
+              {
+                  "amount": "591286810000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "574794220000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "775369380000000000",
+                  "validUntil": "1672272000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:11.913Z"
+  },
+  {
+      "address": "0x2F46d90909154045e5911E7571D3746AF03B1862",
+      "balances": {
+          "total": "7763129650000000000",
+          "unlockable": "7763129650000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:12.310Z"
+  },
+  {
+      "address": "0xa9bE90574238F299554b41c8Ab62DD443c24857a",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:12.686Z"
+  },
+  {
+      "address": "0x7BB2C9A2f189336621f2f16912B2eC0D56C263f4",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:13.048Z"
+  },
+  {
+      "address": "0x5c72DFe4e7521Ff41d4644D1B0022eBd5ea411D8",
+      "balances": {
+          "total": "1617681300000000000",
+          "unlockable": "1397869530000000000",
+          "locked": "219811770000000000",
+          "lockData": [
+              {
+                  "amount": "219811770000000000",
+                  "validUntil": "1674086400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:13.439Z"
+  },
+  {
+      "address": "0xB07a561AbE9B2667C9dc723aFc02aDDA688760E1",
+      "balances": {
+          "total": "14592827530000000000",
+          "unlockable": "11113789790000000000",
+          "locked": "3479037740000000000",
+          "lockData": [
+              {
+                  "amount": "400290140000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "1223971900000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "1854775700000000000",
+                  "validUntil": "1674691200"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:13.843Z"
+  },
+  {
+      "address": "0x148559C76bB3304454BBaC309C49c3B2294cfCD1",
+      "balances": {
+          "total": "180238241000000000",
+          "unlockable": "180238241000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:14.241Z"
+  },
+  {
+      "address": "0x31cA75bA3DB4A8A61304dFAa854Bd301Dbc3484d",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:14.593Z"
+  },
+  {
+      "address": "0xcb69535ABBc95a042914507F963bDD74ad0025FF",
+      "balances": {
+          "total": "91401706529063100000",
+          "unlockable": "1819146600000000000",
+          "locked": "89582559929063100000",
+          "lockData": [
+              {
+                  "amount": "2274501900000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "16499151800000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "15323472229063100000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "33072488000000000000",
+                  "validUntil": "1674691200"
+              },
+              {
+                  "amount": "22412946000000000000",
+                  "validUntil": "1675296000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:15.003Z"
+  },
+  {
+      "address": "0x49379EFAE465C8d420357142477C09386Cc1e764",
+      "balances": {
+          "total": "887421850000000000",
+          "unlockable": "611174200000000000",
+          "locked": "276247650000000000",
+          "lockData": [
+              {
+                  "amount": "276247650000000000",
+                  "validUntil": "1671667200"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:15.693Z"
+  },
+  {
+      "address": "0x15006f1C3Ff248B1204DA94CaaE0c65599844878",
+      "balances": {
+          "total": "10601456100000000000",
+          "unlockable": "7805480000000000000",
+          "locked": "2795976100000000000",
+          "lockData": [
+              {
+                  "amount": "2795976100000000000",
+                  "validUntil": "1672272000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:16.077Z"
+  },
+  {
+      "address": "0x187C6D002a097cbd4B06c4168b5fD309bb3F3c79",
+      "balances": {
+          "total": "6046320400000000000",
+          "unlockable": "4216747800000000000",
+          "locked": "1829572600000000000",
+          "lockData": [
+              {
+                  "amount": "1829572600000000000",
+                  "validUntil": "1674691200"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:16.464Z"
+  },
+  {
+      "address": "0x305e5d785EB274832A68745fdA66A70b1ad2C635",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:16.850Z"
+  },
+  {
+      "address": "0xE095b1E350F52fb9F62277C846ACb77731e0Dcfe",
+      "balances": {
+          "total": "874583830000000000",
+          "unlockable": "874583830000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:17.236Z"
+  },
+  {
+      "address": "0xEa5D417a92950d9A4C02CE3E46a0FB8c6f6023b3",
+      "balances": {
+          "total": "58988593000000000",
+          "unlockable": "58988593000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:17.621Z"
+  },
+  {
+      "address": "0x60fF557B93ADD579a41FbDB18fdC20C064aC3d76",
+      "balances": {
+          "total": "155229701100000000000",
+          "unlockable": "18204621100000000000",
+          "locked": "137025080000000000000",
+          "lockData": [
+              {
+                  "amount": "14216884000000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "33771808000000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "28046677000000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "37060486000000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "23929225000000000000",
+                  "validUntil": "1674691200"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:18.025Z"
+  },
+  {
+      "address": "0xce66C6A88bD7BEc215Aa04FDa4CF7C81055521D0",
+      "balances": {
+          "total": "1108799360000000000",
+          "unlockable": "1108799360000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:18.405Z"
+  },
+  {
+      "address": "0xC671A6B1415dE6549B05775Ee4156074731190c6",
+      "balances": {
+          "total": "2889633458600000000000",
+          "unlockable": "470419808600000000000",
+          "locked": "2419213650000000000000",
+          "lockData": [
+              {
+                  "amount": "160396666000000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "134879910000000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "691907860000000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "125717732000000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "288251922000000000000",
+                  "validUntil": "1674086400"
+              },
+              {
+                  "amount": "168274060000000000000",
+                  "validUntil": "1674691200"
+              },
+              {
+                  "amount": "849785500000000000000",
+                  "validUntil": "1675296000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:18.793Z"
+  },
+  {
+      "address": "0xD47C3A97e6d7d6F2F80C89980104e4EdB80cBDf9",
+      "balances": {
+          "total": "7099125500000000",
+          "unlockable": "7099125500000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:19.159Z"
+  },
+  {
+      "address": "0x1E759C0af530cc66D0E0283Aa0748a79Dc9228DF",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:19.539Z"
+  },
+  {
+      "address": "0x12FF3064a07746462D53958f1F6Cf9285eb9cb90",
+      "balances": {
+          "total": "349070040000000000",
+          "unlockable": "349070040000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:19.922Z"
+  },
+  {
+      "address": "0xC7c10871096B36b036E41d45d15b32B0Cc74b806",
+      "balances": {
+          "total": "6715378790000000000",
+          "unlockable": "3227812790000000000",
+          "locked": "3487566000000000000",
+          "lockData": [
+              {
+                  "amount": "527607950000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "2100221200000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "859736850000000000",
+                  "validUntil": "1674086400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:20.297Z"
+  },
+  {
+      "address": "0xfE5BaB72aF1aeA76AAbc28562E584e59D2708196",
+      "balances": {
+          "total": "7844312520000000000",
+          "unlockable": "4248454100000000000",
+          "locked": "3595858420000000000",
+          "lockData": [
+              {
+                  "amount": "1377466820000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "2218391600000000000",
+                  "validUntil": "1674086400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:20.674Z"
+  },
+  {
+      "address": "0x48E22d549D0ac01163dDF3e14F943f44d8FC5a76",
+      "balances": {
+          "total": "5135183900000000000",
+          "unlockable": "5135183900000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:21.094Z"
+  },
+  {
+      "address": "0xAA7c59b989276575Df1281dB16D56Db69186c590",
+      "balances": {
+          "total": "4887267200000000000",
+          "unlockable": "4887267200000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:21.476Z"
+  },
+  {
+      "address": "0x74176F54BefA72F2315E6AdDF6eB12FBfe3142B2",
+      "balances": {
+          "total": "339307520000000000",
+          "unlockable": "339307520000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:21.879Z"
+  },
+  {
+      "address": "0x09bAc567D73E8BC701a900D14C90c06644eA0156",
+      "balances": {
+          "total": "16480122700000000000",
+          "unlockable": "16480122700000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:22.288Z"
+  },
+  {
+      "address": "0xd6Bc8d6b2f771b5c652599AC26C941457EaD742A",
+      "balances": {
+          "total": "23308748110000000000",
+          "unlockable": "23308748110000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:22.696Z"
+  },
+  {
+      "address": "0x83f6fe95067E24AF601b1B822430c72C0098d208",
+      "balances": {
+          "total": "9990280630000000000",
+          "unlockable": "8965434330000000000",
+          "locked": "1024846300000000000",
+          "lockData": [
+              {
+                  "amount": "1024846300000000000",
+                  "validUntil": "1672272000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:23.055Z"
+  },
+  {
+      "address": "0x116EB0e327f276c9f73B189f78727A3D0D6A3BAA",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:23.409Z"
+  },
+  {
+      "address": "0xe2762f352A8B01f516e55C1538a1be21898f63c9",
+      "balances": {
+          "total": "165355842000000000000",
+          "unlockable": "21615407000000000000",
+          "locked": "143740435000000000000",
+          "lockData": [
+              {
+                  "amount": "8705785700000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "31555047000000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "19884490300000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "11483377000000000000",
+                  "validUntil": "1674086400"
+              },
+              {
+                  "amount": "37630403000000000000",
+                  "validUntil": "1674691200"
+              },
+              {
+                  "amount": "34481332000000000000",
+                  "validUntil": "1675296000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:23.778Z"
+  },
+  {
+      "address": "0xa049AFeF83d112F9B9Ac4E9d743C50aD08EBEe01",
+      "balances": {
+          "total": "90308787000000000",
+          "unlockable": "90308787000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:24.145Z"
+  },
+  {
+      "address": "0x61dC947F8b10f8d2f1DE8292060e122023011530",
+      "balances": {
+          "total": "997188320000000000",
+          "unlockable": "997188320000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:24.519Z"
+  },
+  {
+      "address": "0xcE74552ECb99AF46108AFCD702713b7b667df2eE",
+      "balances": {
+          "total": "780171492598880000",
+          "unlockable": "0",
+          "locked": "780171492598880000",
+          "lockData": [
+              {
+                  "amount": "780171492598880000",
+                  "validUntil": "1671062400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:24.893Z"
+  },
+  {
+      "address": "0x7A0f64C5cE2eb77B868B68b7D1704Ab09CA03a69",
+      "balances": {
+          "total": "19975917810000000000",
+          "unlockable": "10246492830000000000",
+          "locked": "9729424980000000000",
+          "lockData": [
+              {
+                  "amount": "540519980000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "670402900000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "6643099570000000000",
+                  "validUntil": "1672876800"
+              },
+              {
+                  "amount": "952784110000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "922618420000000000",
+                  "validUntil": "1675296000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:25.282Z"
+  },
+  {
+      "address": "0xf7C04A39e47C7ea9D6888F9389eA85846e22aE1a",
+      "balances": {
+          "total": "7780076400000000000",
+          "unlockable": "6640699200000000000",
+          "locked": "1139377200000000000",
+          "lockData": [
+              {
+                  "amount": "1139377200000000000",
+                  "validUntil": "1672876800"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:25.631Z"
+  },
+  {
+      "address": "0xC5261d30264Da70C279Db723429338A9dA4a13E6",
+      "balances": {
+          "total": "495893600000000000",
+          "unlockable": "495893600000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:25.991Z"
+  },
+  {
+      "address": "0x1f916bBF39aB189A9E3d9E1823a7b1A8e9e5f204",
+      "balances": {
+          "total": "3159691860000000000",
+          "unlockable": "3159691860000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:26.362Z"
+  },
+  {
+      "address": "0xe4bf8aa0B78F5001d97b4899aa03d72B6Bf5FC64",
+      "balances": {
+          "total": "262196860000000000",
+          "unlockable": "140667120000000000",
+          "locked": "121529740000000000",
+          "lockData": [
+              {
+                  "amount": "121529740000000000",
+                  "validUntil": "1671062400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:26.720Z"
+  },
+  {
+      "address": "0xf0F9F63c723108f95Bc9b50B6c446B3b2b918788",
+      "balances": {
+          "total": "1709634960000000000",
+          "unlockable": "1709634960000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:27.106Z"
+  },
+  {
+      "address": "0xec71C0e5a82501B157eF59F740FE500A6A868069",
+      "balances": {
+          "total": "4164860300000000000",
+          "unlockable": "4164860300000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:27.495Z"
+  },
+  {
+      "address": "0x8DC79fd9606C42154C66152Ea27CbaC980ad7961",
+      "balances": {
+          "total": "3228386780000000000",
+          "unlockable": "2522599300000000000",
+          "locked": "705787480000000000",
+          "lockData": [
+              {
+                  "amount": "559920140000000000",
+                  "validUntil": "1672876800"
+              },
+              {
+                  "amount": "145867340000000000",
+                  "validUntil": "1675296000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:27.911Z"
+  },
+  {
+      "address": "0x420E77B12a2d05f879C41C679373A2be76F47FBB",
+      "balances": {
+          "total": "10062201330000000000",
+          "unlockable": "1458191100000000000",
+          "locked": "8604010230000000000",
+          "lockData": [
+              {
+                  "amount": "3624158300000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "3796433230000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "1183418700000000000",
+                  "validUntil": "1675296000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:28.304Z"
+  },
+  {
+      "address": "0x8D481eFD1813764E3cdd41600d16FEdCbD39047a",
+      "balances": {
+          "total": "2204975100000000000",
+          "unlockable": "2204975100000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:28.669Z"
+  },
+  {
+      "address": "0xbf5cf1fc71EA7A166D49f4D2d636F9cF0be9971b",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:29.047Z"
+  },
+  {
+      "address": "0x00dFd40Dbf0659D1fDfC362Fb6cE5718B7Acf565",
+      "balances": {
+          "total": "506539420000000000",
+          "unlockable": "506539420000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:29.404Z"
+  },
+  {
+      "address": "0x4a9D6dDBA249b2DDBE77639f15980C52860BA2AB",
+      "balances": {
+          "total": "1067471900000000000",
+          "unlockable": "1067471900000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:29.803Z"
+  },
+  {
+      "address": "0xE53D3f2B99FE0Ed6C05977bC0547127836f0D78d",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:30.170Z"
+  },
+  {
+      "address": "0x1C4004CC9c457e837556DF65499a27465A97D47E",
+      "balances": {
+          "total": "4211005000000000000",
+          "unlockable": "4211005000000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:30.538Z"
+  },
+  {
+      "address": "0x6dD91BdaB368282dc4Ea4f4beFc831b78a7C38C0",
+      "balances": {
+          "total": "3202036900000000000",
+          "unlockable": "1152579300000000000",
+          "locked": "2049457600000000000",
+          "lockData": [
+              {
+                  "amount": "2049457600000000000",
+                  "validUntil": "1671667200"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:30.913Z"
+  },
+  {
+      "address": "0x5D0087C38d00230eA11e67DCb18bF1e97716b23a",
+      "balances": {
+          "total": "6819713500000000000",
+          "unlockable": "6819713500000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:31.320Z"
+  },
+  {
+      "address": "0x7b20A61f0bf38c08037711e719d455169561a7af",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:31.691Z"
+  },
+  {
+      "address": "0xfc6d3b99EF45c163A504392eFbF96454C2293635",
+      "balances": {
+          "total": "0",
+          "unlockable": "0",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:32.126Z"
+  },
+  {
+      "address": "0xBF7fB285B53f30e09aEf516597f6a5db0cb2269A",
+      "balances": {
+          "total": "37939939000000000000",
+          "unlockable": "37939939000000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:32.486Z"
+  },
+  {
+      "address": "0x473003ddCd025C9C0a64419c0FE89cFe845d8D2C",
+      "balances": {
+          "total": "2547996200000000000",
+          "unlockable": "2547996200000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:32.898Z"
+  },
+  {
+      "address": "0xB46166ed8efEf7fa57b77219397607403AbF5253",
+      "balances": {
+          "total": "32355659900000000000",
+          "unlockable": "21933640300000000000",
+          "locked": "10422019600000000000",
+          "lockData": [
+              {
+                  "amount": "4474375100000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "5947644500000000000",
+                  "validUntil": "1672876800"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:33.262Z"
+  },
+  {
+      "address": "0x6d14e9dDaFf7d10606D7A0deFf195bd5713Ed384",
+      "balances": {
+          "total": "155313300000000000",
+          "unlockable": "155313300000000000",
+          "locked": "0",
+          "lockData": []
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:33.648Z"
+  },
+  {
+      "address": "0x355D72Fb52AD4591B2066E43e89A7A38CF5cb341",
+      "balances": {
+          "total": "2582787350000000000000",
+          "unlockable": "0",
+          "locked": "2582787350000000000000",
+          "lockData": [
+              {
+                  "amount": "602791750000000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "1979995600000000000000",
+                  "validUntil": "1675296000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:34.011Z"
+  },
+  {
+      "address": "0x90d2570f2a168A66c68d7bd840A2507A05dADd59",
+      "balances": {
+          "total": "6018784470000000000",
+          "unlockable": "0",
+          "locked": "6018784470000000000",
+          "lockData": [
+              {
+                  "amount": "498656170000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "4104834000000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "1415294300000000000",
+                  "validUntil": "1672272000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:34.417Z"
+  },
+  {
+      "address": "0xd645e1cbF208F0A930572e0457826137089BE5c6",
+      "balances": {
+          "total": "867849580000000000",
+          "unlockable": "0",
+          "locked": "867849580000000000",
+          "lockData": [
+              {
+                  "amount": "867849580000000000",
+                  "validUntil": "1671062400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:34.800Z"
+  },
+  {
+      "address": "0x2d6bB700eD0Fc6d1FCB9057c5c12EDB0D1C06F4B",
+      "balances": {
+          "total": "13087060400000000000",
+          "unlockable": "0",
+          "locked": "13087060400000000000",
+          "lockData": [
+              {
+                  "amount": "2956743800000000000",
+                  "validUntil": "1671062400"
+              },
+              {
+                  "amount": "3035116000000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "7095200600000000000",
+                  "validUntil": "1672876800"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:35.169Z"
+  },
+  {
+      "address": "0x23aE07851bd347cC1B4550253940A2774d1E76Cc",
+      "balances": {
+          "total": "27282844900869522813",
+          "unlockable": "0",
+          "locked": "27282844900869522813",
+          "lockData": [
+              {
+                  "amount": "27282844900869522813",
+                  "validUntil": "1671667200"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:35.553Z"
+  },
+  {
+      "address": "0x765B66575565157D3A12Cb62A0c39Bd237f9eF9F",
+      "balances": {
+          "total": "1009878900000000000",
+          "unlockable": "0",
+          "locked": "1009878900000000000",
+          "lockData": [
+              {
+                  "amount": "1009878900000000000",
+                  "validUntil": "1671667200"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:35.915Z"
+  },
+  {
+      "address": "0x05e1F287dde4f9514eD22000a62a45b0da9dC409",
+      "balances": {
+          "total": "2356307300000000000",
+          "unlockable": "0",
+          "locked": "2356307300000000000",
+          "lockData": [
+              {
+                  "amount": "2356307300000000000",
+                  "validUntil": "1671667200"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:36.277Z"
+  },
+  {
+      "address": "0x05F96d906ef293AD1f6a55531963765DD39A13f7",
+      "balances": {
+          "total": "4926730030000000000",
+          "unlockable": "0",
+          "locked": "4926730030000000000",
+          "lockData": [
+              {
+                  "amount": "392873830000000000",
+                  "validUntil": "1671667200"
+              },
+              {
+                  "amount": "1619887100000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "2913969100000000000",
+                  "validUntil": "1674086400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:36.632Z"
+  },
+  {
+      "address": "0x10fDD453D2b8c20bFC508f5E52B01B50702846eA",
+      "balances": {
+          "total": "10690815000000000000",
+          "unlockable": "0",
+          "locked": "10690815000000000000",
+          "lockData": [
+              {
+                  "amount": "10690815000000000000",
+                  "validUntil": "1671667200"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:37.031Z"
+  },
+  {
+      "address": "0x6C4a54e96E29FCd644d067f2f6dd54Cc3Fb8b21a",
+      "balances": {
+          "total": "2078872400000000000",
+          "unlockable": "0",
+          "locked": "2078872400000000000",
+          "lockData": [
+              {
+                  "amount": "2078872400000000000",
+                  "validUntil": "1672272000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:37.431Z"
+  },
+  {
+      "address": "0x6FbE6EaB3053fEF0DA871807346B0B40E989840f",
+      "balances": {
+          "total": "54425506000000000000",
+          "unlockable": "0",
+          "locked": "54425506000000000000",
+          "lockData": [
+              {
+                  "amount": "14660348000000000000",
+                  "validUntil": "1672272000"
+              },
+              {
+                  "amount": "10225048000000000000",
+                  "validUntil": "1672876800"
+              },
+              {
+                  "amount": "13870438000000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "15669672000000000000",
+                  "validUntil": "1674086400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:37.854Z"
+  },
+  {
+      "address": "0x145DCFb47920325d5bB44d239cb9fD0dcaDA8bC7",
+      "balances": {
+          "total": "11518812310000000000",
+          "unlockable": "0",
+          "locked": "11518812310000000000",
+          "lockData": [
+              {
+                  "amount": "11518812310000000000",
+                  "validUntil": "1672272000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:38.226Z"
+  },
+  {
+      "address": "0x7d238E6c81f296b47441e6b834432aC1464448AA",
+      "balances": {
+          "total": "518078620000000000",
+          "unlockable": "0",
+          "locked": "518078620000000000",
+          "lockData": [
+              {
+                  "amount": "518078620000000000",
+                  "validUntil": "1672272000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:38.595Z"
+  },
+  {
+      "address": "0x88cb742c6b98c439900DBbf2C948f83C415f6152",
+      "balances": {
+          "total": "104300000000000000000",
+          "unlockable": "0",
+          "locked": "104300000000000000000",
+          "lockData": [
+              {
+                  "amount": "104300000000000000000",
+                  "validUntil": "1672272000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:38.984Z"
+  },
+  {
+      "address": "0xa5E9c574661519654C270D899836302116F48258",
+      "balances": {
+          "total": "2206765000000000000",
+          "unlockable": "0",
+          "locked": "2206765000000000000",
+          "lockData": [
+              {
+                  "amount": "2206765000000000000",
+                  "validUntil": "1672876800"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:39.356Z"
+  },
+  {
+      "address": "0xc73e9dDaD2Ae4CBED04C3547a4103ACe4B9cdd13",
+      "balances": {
+          "total": "70979028000000000",
+          "unlockable": "0",
+          "locked": "70979028000000000",
+          "lockData": [
+              {
+                  "amount": "70979028000000000",
+                  "validUntil": "1672876800"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:39.726Z"
+  },
+  {
+      "address": "0x95d2772cFD7285DA8e1A5c56901F112a00A16E4b",
+      "balances": {
+          "total": "3270005700000000000",
+          "unlockable": "0",
+          "locked": "3270005700000000000",
+          "lockData": [
+              {
+                  "amount": "3270005700000000000",
+                  "validUntil": "1672876800"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:40.106Z"
+  },
+  {
+      "address": "0x42f7FF5dB92FdD29BE1ffb25f9fD78Bfa9279eFC",
+      "balances": {
+          "total": "21918255800000000000",
+          "unlockable": "0",
+          "locked": "21918255800000000000",
+          "lockData": [
+              {
+                  "amount": "16894401000000000000",
+                  "validUntil": "1672876800"
+              },
+              {
+                  "amount": "5023854800000000000",
+                  "validUntil": "1674086400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:40.492Z"
+  },
+  {
+      "address": "0x3441c49613F556c0BF62c788ef2C608eF8fB3899",
+      "balances": {
+          "total": "22181457510000000000",
+          "unlockable": "0",
+          "locked": "22181457510000000000",
+          "lockData": [
+              {
+                  "amount": "9226313610000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "12955143900000000000",
+                  "validUntil": "1674086400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:40.848Z"
+  },
+  {
+      "address": "0xEc9611D1C0f730527Ec96678FF629501c288bfe0",
+      "balances": {
+          "total": "1913407500000000000",
+          "unlockable": "0",
+          "locked": "1913407500000000000",
+          "lockData": [
+              {
+                  "amount": "813625800000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "1099781700000000000",
+                  "validUntil": "1674086400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:41.240Z"
+  },
+  {
+      "address": "0x325aeb8e4624F96788591b2D1b42D8CfC0D117D1",
+      "balances": {
+          "total": "509786280000000000",
+          "unlockable": "0",
+          "locked": "509786280000000000",
+          "lockData": [
+              {
+                  "amount": "197105670000000000",
+                  "validUntil": "1673481600"
+              },
+              {
+                  "amount": "312680610000000000",
+                  "validUntil": "1674086400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:41.639Z"
+  },
+  {
+      "address": "0xC56E12Fd9435bbEDD79E03429CfE798271aa4b5E",
+      "balances": {
+          "total": "189055690000000000",
+          "unlockable": "0",
+          "locked": "189055690000000000",
+          "lockData": [
+              {
+                  "amount": "189055690000000000",
+                  "validUntil": "1674086400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:42.056Z"
+  },
+  {
+      "address": "0x299F6c73Ac430ff54a6CCE77a34EeA07BC6b2ecd",
+      "balances": {
+          "total": "1538136200000000000",
+          "unlockable": "0",
+          "locked": "1538136200000000000",
+          "lockData": [
+              {
+                  "amount": "1538136200000000000",
+                  "validUntil": "1674086400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:42.420Z"
+  },
+  {
+      "address": "0x08493630967083cA4D781ce77952B1f39EaD6fFa",
+      "balances": {
+          "total": "6440829500000000000",
+          "unlockable": "0",
+          "locked": "6440829500000000000",
+          "lockData": [
+              {
+                  "amount": "6440829500000000000",
+                  "validUntil": "1674086400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:42.809Z"
+  },
+  {
+      "address": "0xefF618648Fc7a3Cd502d1C5f01DfFdAfdCd31B9D",
+      "balances": {
+          "total": "483621500000000000",
+          "unlockable": "0",
+          "locked": "483621500000000000",
+          "lockData": [
+              {
+                  "amount": "483621500000000000",
+                  "validUntil": "1674086400"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:43.184Z"
+  },
+  {
+      "address": "0x2B60B0909830a4142e8B42c87db6e0ee48B73A64",
+      "balances": {
+          "total": "404030630000000000",
+          "unlockable": "0",
+          "locked": "404030630000000000",
+          "lockData": [
+              {
+                  "amount": "404030630000000000",
+                  "validUntil": "1674691200"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:43.527Z"
+  },
+  {
+      "address": "0x5420781cab62Eae3df6b3Eab2aF45BcB1bbc26ba",
+      "balances": {
+          "total": "798352380000000000",
+          "unlockable": "0",
+          "locked": "798352380000000000",
+          "lockData": [
+              {
+                  "amount": "798352380000000000",
+                  "validUntil": "1675296000"
+              }
+          ]
+      },
+      "balancesUpdatedAt": "2022-12-14T08:23:43.902Z"
+  }
+]

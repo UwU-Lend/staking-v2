@@ -1,9 +1,9 @@
-import { IERC20, IncentivesControllerMock, IncentivesControllerMock__factory, Migration, MultiFeeDistributionV2, MultiFeeDistributionV2__factory } from '../../typechain-types';
+import { IERC20, IncentivesControllerMock, IncentivesControllerMock__factory, Migration, Migration__factory, MultiFeeDistributionV2, MultiFeeDistributionV2__factory } from '../../typechain-types';
 
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import balancesBatchEntries from "../../balances-batch-entries.json";
 import distributorABI from '../../abis/MultiFeeDistribution.json';
 import { ethers } from 'hardhat';
-import { migrationFixture } from './migration.fixture';
 
 export type MultiFeeDistributionV2FixtureResult = {
   migration: Migration;
@@ -41,7 +41,8 @@ export const MultiFeeDistributionV2Fixture = async (): Promise<MultiFeeDistribut
   const IncentivesController: IncentivesControllerMock__factory = await ethers.getContractFactory('IncentivesControllerMock');
   const incentivesController: IncentivesControllerMock = await IncentivesController.deploy();
 
-  const {migration} = await migrationFixture();
+  const Migration: Migration__factory = await ethers.getContractFactory('Migration');
+  const migration: Migration = await Migration.deploy();
 
   const UToken = await ethers.getContractFactory('UTokenMock');
   const uToken = await UToken.deploy(ethers.utils.parseEther("1000000")) as IERC20;
