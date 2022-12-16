@@ -4,6 +4,7 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { ethers } from 'hardhat';
 import incentivesControllerABI from '../../abis/InsentivesController.json';
 
+// StartTime: 1663608659
 /*
 2022-09-19T17:31:00.000Z - 2022-10-19T17:30:59.000Z = 9645061728395060 = 25000 UwU 1 - 2592000
 2022-10-19T17:30:59.000Z - 2022-11-18T17:30:59.000Z = 19290123456790120 = 50000 UwU 2592000 - 5184000
@@ -63,7 +64,7 @@ export const incentivesController2Fixture = async (): Promise<IncentivesControll
   const controllerV1 = new ethers.Contract(INCENTIVES_CONTROLLER, incentivesControllerABI, ethers.provider);
 
   const IncentivesControllerV2 = await ethers.getContractFactory('IncentivesControllerV2');
-  const controllerV2 = await IncentivesControllerV2.deploy(START_TIME_OFFSET, REWARDS_PER_SECOND, POOL_CONFIGURATOR, distributor.address, MAX_MINTABLE, controllerV1.address);
+  const controllerV2 = await IncentivesControllerV2.deploy(START_TIME_OFFSET, REWARDS_PER_SECOND, POOL_CONFIGURATOR, , MAX_MINTABLE, controllerV1.address);
 
   return { distributor, rewardToken, rewardTokenHolder, controllerV1, controllerV2 };
 }
