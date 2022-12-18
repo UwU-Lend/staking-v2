@@ -74,7 +74,7 @@ contract IncentivesControllerV2 is Ownable {
 
   bool private setuped;
   mapping(address => mapping(address => bool)) private userInitiated;
-  mapping(address => bool) private userBaseClaimableClaimed;
+  mapping(address => bool) private userBaseClaimableInitiated;
 
   constructor(
     uint128[] memory _startTimeOffset,
@@ -242,7 +242,7 @@ contract IncentivesControllerV2 is Ownable {
     if (amount > 0) {
       uint pending = amount.mul(accRewardPerShare).div(1e12).sub(info.rewardDebt);
       if (pending > 0) {
-        _userBaseClaimable[_user] = _userBaseClaimable[_user].add(pending);
+        _userBaseClaimable[_user] = userBaseClaimable(_user).add(pending);
       }
     }
     user.amount = _balance;
@@ -255,6 +255,7 @@ contract IncentivesControllerV2 is Ownable {
     if (!userInitiated[msg.sender][_user]) {
       userInitiated[msg.sender][_user] = true;
     }
+    userBaseClaimableInitiated[_user] = true;
   }
 
   // Claim pending rewards for one or more pools.
@@ -262,6 +263,7 @@ contract IncentivesControllerV2 is Ownable {
   function claim(address _user, address[] calldata _tokens) external {
     _updateEmissions();
     uint pending = userBaseClaimable(_user);
+    userBaseClaimableInitiated[_user] = true;
     _userBaseClaimable[_user] = 0;
     uint _totalAllocPoint = totalAllocPoint;
     for (uint i = 0; i < _tokens.length; i++) {
@@ -275,14 +277,13 @@ contract IncentivesControllerV2 is Ownable {
       user.rewardDebt = rewardDebt;
     }
     _mint(_user, pending);
-    userBaseClaimableClaimed[_user] = true;
   }
 
   function userBaseClaimable(address user) public view returns (uint) {
-    if (userBaseClaimableClaimed[user]) {
+    if (userBaseClaimableInitiated[user]) {
       return _userBaseClaimable[user];
     } else {
-      return _userBaseClaimable[user].add(incentivesController.userBaseClaimable(user));
+      return incentivesController.userBaseClaimable(user);
     }
   }
 
