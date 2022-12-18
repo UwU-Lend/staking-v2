@@ -96,7 +96,7 @@ contract Migration is IMigration, Ownable {
     }
   }
 
-  function removeAllBalances() external  onlyDistributorInactive onlyOwner {
+  function removeAllBalances() external onlyDistributorInactive onlyOwner {
     for (uint i = 0; i < accounts.length; i++) {
       delete accountBalances[accounts[i]];
       delete accountsIndexes[accounts[i]];
