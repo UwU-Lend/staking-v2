@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-import "./interfaces/IStakingRewards.sol";
 import "./interfaces/IMultiFeeDistribution.sol";
 import "./interfaces/IChefIncentivesController.sol";
 import "./interfaces/IMigration.sol";
@@ -67,7 +66,6 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   bool public migrationAreSet;
   address public teamRewardVault;
   uint public teamRewardFee = 2000; // 1% = 100
-  IStakingRewards public stakingRewards;
   address[] public rewardTokens;
   mapping(address => Reward) public rewardData;
 
@@ -96,10 +94,6 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   function setTeamRewardFee(uint fee) external onlyOwner {
     require(fee <= 10000, "fee too high");
     teamRewardFee = fee;
-  }
-
-  function setStakingRewards(address _stakingRewards) external onlyOwner {
-    stakingRewards = IStakingRewards(_stakingRewards);
   }
 
   function getMinters() external view returns(address[] memory){
@@ -231,9 +225,6 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
     }
     stakingToken.safeTransferFrom(msg.sender, address(this), amount);
     emit Locked(onBehalfOf, amount);
-    if (address(stakingRewards) != address(0)) {
-      stakingRewards.lock(onBehalfOf, amount);
-    }
   }
 
   // Withdraw all currently locked tokens where the unlock time has passed
@@ -258,9 +249,6 @@ contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
     lockedSupply = lockedSupply.sub(amount);
     stakingToken.safeTransfer(msg.sender, amount);
     emit WithdrawnExpiredLocks(msg.sender, amount);
-    if (address(stakingRewards) != address(0)) {
-      stakingRewards.withdraw(msg.sender, amount);
-    }
   }
 
   function mint(address user, uint amount) external {
