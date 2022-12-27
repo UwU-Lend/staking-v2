@@ -11,8 +11,6 @@ import "./interfaces/IMultiFeeDistribution.sol";
 import "./interfaces/IChefIncentivesController.sol";
 import "./interfaces/IMigration.sol";
 
-import "hardhat/console.sol";
-
 contract MultiFeeDistributionV2 is IMultiFeeDistribution, Ownable {
   using SafeMath for uint;
   using SafeERC20 for IERC20;

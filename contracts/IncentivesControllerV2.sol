@@ -10,8 +10,6 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "hardhat/console.sol";
-
 contract IncentivesControllerV2 is Ownable {
   using SafeMath for uint;
   using SafeERC20 for IERC20;
@@ -52,9 +50,9 @@ contract IncentivesControllerV2 is Ownable {
   // reward rate is applied.
   EmissionPoint[] public emissionSchedule;
   // token => user => Info of each user that stakes LP tokens.
-  mapping(address => mapping(address => UserInfo)) private _userInfo;
+  mapping(address => mapping(address => UserInfo)) public userInfo;
   // user => base claimable balance
-  mapping(address => uint) private _userBaseClaimable;
+  mapping(address => uint) public userBaseClaimable;
   // Total allocation poitns. Must be the sum of all allocation points in all pools.
   uint public totalAllocPoint = 0;
   // The block number when reward mining starts.
@@ -73,7 +71,7 @@ contract IncentivesControllerV2 is Ownable {
   );
 
   bool private setuped;
-  mapping(address => mapping(address => bool)) private userInitiated;
+  mapping(address => mapping(address => bool)) private userInfoInitiated;
   mapping(address => bool) private userBaseClaimableInitiated;
 
   constructor(
@@ -163,16 +161,25 @@ contract IncentivesControllerV2 is Ownable {
     view
     returns (uint[] memory)
   {
-    uint[] memory claimable = new uint[](_tokens.length);
-    for (uint i = 0; i < _tokens.length; i++) {
+    uint256[] memory claimable = new uint256[](_tokens.length);
+    for (uint256 i = 0; i < _tokens.length; i++) {
       address token = _tokens[i];
       PoolInfo memory pool = poolInfo[token];
-      UserInfo memory user = userInfo(token, _user);
-      uint accRewardPerShare = pool.accRewardPerShare;
-      uint lpSupply = pool.totalSupply;
+      UserInfo memory user;
+      if (userInfoInitiated[token][_user]) {
+        user = userInfo[token][_user];
+      } else {
+        IChefIncentivesController.UserInfo memory userInfoV1 = incentivesController.userInfo(token, _user);
+        user = UserInfo({
+          amount: userInfoV1.amount,
+          rewardDebt: userInfoV1.rewardDebt
+        });
+      }
+      uint256 accRewardPerShare = pool.accRewardPerShare;
+      uint256 lpSupply = pool.totalSupply;
       if (block.timestamp > pool.lastRewardTime && lpSupply != 0) {
-        uint duration = block.timestamp.sub(pool.lastRewardTime);
-        uint reward = duration.mul(rewardsPerSecond).mul(pool.allocPoint).div(totalAllocPoint);
+        uint256 duration = block.timestamp.sub(pool.lastRewardTime);
+        uint256 reward = duration.mul(rewardsPerSecond).mul(pool.allocPoint).div(totalAllocPoint);
         accRewardPerShare = accRewardPerShare.add(reward.mul(1e12).div(lpSupply));
       }
       claimable[i] = user.amount.mul(accRewardPerShare).div(1e12).sub(user.rewardDebt);
@@ -231,18 +238,19 @@ contract IncentivesControllerV2 is Ownable {
   }
 
   function handleAction(address _user, uint _balance, uint _totalSupply) external {
+    initiateUserInfo(_user, msg.sender);
+    initiateUserBaseClaimable(_user);
     PoolInfo storage pool = poolInfo[msg.sender];
     require(pool.lastRewardTime > 0);
     _updateEmissions();
     _updatePool(pool, totalAllocPoint);
-    UserInfo memory info = userInfo(msg.sender, _user);
-    UserInfo storage user = _userInfo[msg.sender][_user];
-    uint amount = info.amount;
-    uint accRewardPerShare = pool.accRewardPerShare;
+    UserInfo storage user = userInfo[msg.sender][_user];
+    uint256 amount = user.amount;
+    uint256 accRewardPerShare = pool.accRewardPerShare;
     if (amount > 0) {
-      uint pending = amount.mul(accRewardPerShare).div(1e12).sub(info.rewardDebt);
+      uint256 pending = amount.mul(accRewardPerShare).div(1e12).sub(user.rewardDebt);
       if (pending > 0) {
-        _userBaseClaimable[_user] = userBaseClaimable(_user).add(pending);
+        userBaseClaimable[_user] = userBaseClaimable[_user].add(pending);
       }
     }
     user.amount = _balance;
@@ -252,48 +260,49 @@ contract IncentivesControllerV2 is Ownable {
       pool.onwardIncentives.handleAction(msg.sender, _user, _balance, _totalSupply);
     }
     emit BalanceUpdated(msg.sender, _user, _balance, _totalSupply);
-    if (!userInitiated[msg.sender][_user]) {
-      userInitiated[msg.sender][_user] = true;
+  }
+
+  function initiateUserBaseClaimable(address user) internal {
+    require(address(incentivesController) != address(0), 'incentives controller not set');
+    if(!userBaseClaimableInitiated[user]) {
+      userBaseClaimable[user] = incentivesController.userBaseClaimable(user);
+      userBaseClaimableInitiated[user] = true;
     }
-    userBaseClaimableInitiated[_user] = true;
+  }
+
+  function initiateUserInfo(address user, address token) internal {
+    require(address(incentivesController) != address(0), 'incentives controller not set');
+    if(!userInfoInitiated[token][user]) {
+      IChefIncentivesController.UserInfo memory userInfoV1 = incentivesController.userInfo(token, user);
+      userInfo[token][user] = UserInfo({
+        amount: userInfoV1.amount,
+        rewardDebt: userInfoV1.rewardDebt
+      });
+      userInfoInitiated[token][user] = true;
+    }
   }
 
   // Claim pending rewards for one or more pools.
   // Rewards are not received directly, they are minted by the rewardMinter.
   function claim(address _user, address[] calldata _tokens) external {
+    for (uint i = 0; i < _tokens.length; i++) {
+      initiateUserInfo(_user, _tokens[i]);
+    }
+    initiateUserBaseClaimable(_user);
     _updateEmissions();
-    uint pending = userBaseClaimable(_user);
-    userBaseClaimableInitiated[_user] = true;
-    _userBaseClaimable[_user] = 0;
-    uint _totalAllocPoint = totalAllocPoint;
+    uint256 pending = userBaseClaimable[_user];
+    userBaseClaimable[_user] = 0;
+    uint256 _totalAllocPoint = totalAllocPoint;
     for (uint i = 0; i < _tokens.length; i++) {
       PoolInfo storage pool = poolInfo[_tokens[i]];
       require(pool.lastRewardTime > 0);
       _updatePool(pool, _totalAllocPoint);
-      UserInfo storage user = _userInfo[_tokens[i]][_user];
-      UserInfo memory info = userInfo(_tokens[i], _user);
-      uint rewardDebt = info.amount.mul(pool.accRewardPerShare).div(1e12);
-      pending = pending.add(rewardDebt.sub(info.rewardDebt));
+      UserInfo storage user = userInfo[_tokens[i]][_user];
+      uint256 rewardDebt = user.amount.mul(pool.accRewardPerShare).div(1e12);
+      pending = pending.add(rewardDebt.sub(user.rewardDebt));
       user.rewardDebt = rewardDebt;
     }
     _mint(_user, pending);
-  }
-
-  function userBaseClaimable(address user) public view returns (uint) {
-    if (userBaseClaimableInitiated[user]) {
-      return _userBaseClaimable[user];
-    } else {
-      return incentivesController.userBaseClaimable(user);
-    }
-  }
-
-  function userInfo(address token, address user) public view returns (UserInfo memory) {
-    if (userInitiated[token][user]) {
-      return _userInfo[token][user];
-    } else {
-      IChefIncentivesController.UserInfo memory info = incentivesController.userInfo(token, user);
-      return UserInfo(info.amount, info.rewardDebt);
-    }
   }
 
   function setup() external onlyOwner {

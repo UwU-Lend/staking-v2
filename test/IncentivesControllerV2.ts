@@ -108,10 +108,9 @@ describe("IncentivesControllerV2", () => {
       const balanceInWei: BigNumber = BigNumber.from(10).pow(18).mul(1000);
       await controllerV1.connect(tokenSigner).handleAction(user1.address, balanceInWei, balanceInWei.add(totalSupply));
       await controllerV2.setup();
-      const userInfo1 = await controllerV1.userInfo(token.address, user1.address);
-      const userInfo2 = await controllerV2.userInfo(token.address, user1.address);
-      expect(userInfo1.amount).to.be.equal(userInfo2.amount);
-      expect(userInfo1.rewardDebt).to.be.equal(userInfo2.rewardDebt);
+      const userInfo = await controllerV2.userInfo(token.address, user1.address);
+      expect(userInfo.amount).to.be.equal(0);
+      expect(userInfo.rewardDebt).to.be.equal(0);
     });
     it("Sould be receive data from v2 (after handle action)", async () => {
       const [, user1] = await ethers.getSigners();
@@ -168,20 +167,12 @@ describe("IncentivesControllerV2", () => {
       await controllerV2.setup();
       const blockTimestamp: BigNumber = BigNumber.from(await time.increase(86400 * 7));
       const poolInfo1: PoolInfo = await controllerV1.poolInfo(token.address);
-      const poolInfo2: PoolInfo = await controllerV2.poolInfo(token.address);
       const userInfo1: UserInfo = await controllerV1.userInfo(token.address, user1.address);
-      const userInfo2: UserInfo = await controllerV2.userInfo(token.address, user1.address);
       const rewardsPerSecond1: BigNumber = await controllerV1.rewardsPerSecond();
-      const rewardsPerSecond2: BigNumber = await controllerV2.rewardsPerSecond();
       const totalAllocPoint1 = await controllerV1.totalAllocPoint();
-      const totalAllocPoint2 = await controllerV2.totalAllocPoint();
       const claimableReward1: BigNumber[] = await controllerV1.claimableReward(user1.address, [token.address]);
-      const claimableReward2: BigNumber[] = await controllerV2.claimableReward(user1.address, [token.address]);
       const calcClaimableReward1 = calcClaimableReward(poolInfo1, userInfo1, rewardsPerSecond1, totalAllocPoint1, blockTimestamp);
-      const calcClaimableReward2 = calcClaimableReward(poolInfo2, userInfo2, rewardsPerSecond2, totalAllocPoint2, blockTimestamp);
-      expect(claimableReward1[0]).to.be.equal(claimableReward2[0]);
       expect(claimableReward1[0]).to.be.equal(calcClaimableReward1);
-      expect(claimableReward1[0]).to.be.equal(calcClaimableReward2);
     });
     it("Sould be the right amount uDAI (v2 handle action)", async () => {
       const [, user1] = await ethers.getSigners();
@@ -221,9 +212,9 @@ describe("IncentivesControllerV2", () => {
       await time.increase(86400 * 3);
       await controllerV2.setup();
       await time.increase(86400 * 5);
-      const userBaseClaimable: BigNumber = await controllerV2.userBaseClaimable(user1.address);
+      const userBaseClaimable: BigNumber = await controllerV1.userBaseClaimable(user1.address);
       const poolInfo: PoolInfo = await controllerV2.poolInfo(token.address);
-      const userInfo: UserInfo = await controllerV2.userInfo(token.address, user1.address);
+      const userInfo: UserInfo = await controllerV1.userInfo(token.address, user1.address);
       const rewardsPerSecond: BigNumber = await controllerV2.rewardsPerSecond();
       const totalAllocPoint = await controllerV2.totalAllocPoint();
       const balanceBefore = await rewardToken.balanceOf(user1.address);
@@ -232,7 +223,7 @@ describe("IncentivesControllerV2", () => {
       const balanceAfter = await rewardToken.balanceOf(user1.address);
       expect(balanceAfter.sub(balanceBefore)).to.be.equals(userBaseClaimable.add(calcReward));
     });
-    it("Sould be the right amount uDAI (call v1 handleAction twice)", async () => {
+    it("Sould be the right amount uDAI after call handleAction twice (has no effect)", async () => {
       const [, user1] = await ethers.getSigners();
       const { controllerV1, controllerV2, distributor, rewardToken, rewardTokenHolder } = await loadFixture(incentivesController2Fixture);
       await rewardToken.connect(rewardTokenHolder).transfer(distributor.address, ethers.utils.parseEther('1000'));
@@ -243,14 +234,15 @@ describe("IncentivesControllerV2", () => {
       const totalSupply: BigNumber = await token.totalSupply();
       const balanceInWei: BigNumber = BigNumber.from(10).pow(18).mul(1000);
       await controllerV1.connect(tokenSigner).handleAction(user1.address, balanceInWei, balanceInWei.add(totalSupply));
+      const userInfo: UserInfo = await controllerV1.userInfo(token.address, user1.address);
+      const userBaseClaimable: BigNumber = await controllerV2.userBaseClaimable(user1.address);
       await time.increase(86400 * 3);
       await controllerV2.setup();
       await time.increase(86400 * 5);
       await controllerV1.connect(tokenSigner).handleAction(user1.address, balanceInWei, balanceInWei.add(totalSupply));
       await time.increase(86400 * 7);
-      const userBaseClaimable: BigNumber = await controllerV2.userBaseClaimable(user1.address);
+      const userBaseClaimable2: BigNumber = await controllerV1.userBaseClaimable(user1.address);
       const poolInfo: PoolInfo = await controllerV2.poolInfo(token.address);
-      const userInfo: UserInfo = await controllerV2.userInfo(token.address, user1.address);
       const rewardsPerSecond: BigNumber = await controllerV2.rewardsPerSecond();
       const totalAllocPoint = await controllerV2.totalAllocPoint();
       const balanceBefore = await rewardToken.balanceOf(user1.address);
@@ -312,6 +304,39 @@ describe("IncentivesControllerV2", () => {
       await controllerV2.claim(user1.address, [token.address]);
       const balanceAfter = await rewardToken.balanceOf(user1.address);
       expect(balanceAfter.sub(balanceBefore)).to.be.equals(userBaseClaimable.add(calcReward));
+    });
+    it("Should be correct executed: handle action v1 -> migration -> claim v2 -> claim v2", async () => {
+      const [, user1] = await ethers.getSigners();
+      const { controllerV1, controllerV2, distributor, rewardToken, rewardTokenHolder } = await loadFixture(incentivesController2Fixture);
+      await rewardToken.connect(rewardTokenHolder).transfer(distributor.address, ethers.utils.parseEther('1000'));
+      const tokenAddress: string = await controllerV1.registeredTokens(0);
+      const token = await ethers.getContractAt("ERC20", tokenAddress);
+      const tokenSigner: SignerWithAddress = await ethers.getImpersonatedSigner(tokenAddress);
+      await ethers.provider.send('hardhat_setBalance', [tokenSigner.address, ethers.utils.parseEther('1000').toHexString()]);
+      const totalSupply: BigNumber = await token.totalSupply();
+      const balanceInWei: BigNumber = BigNumber.from(10).pow(18).mul(1000);
+      await controllerV1.connect(tokenSigner).handleAction(user1.address, balanceInWei, balanceInWei.add(totalSupply));
+      await time.increase(86400 * 5);
+      await controllerV2.setup();
+      await time.increase(86400 * 5);
+      const claimableReward1: BigNumber[] = await controllerV2.claimableReward(user1.address, [token.address]);
+      await controllerV2.claim(user1.address, [token.address]);
+      const balance1 = await rewardToken.balanceOf(user1.address);
+      console.log('\n');
+      // await time.increase(86400 * 10);
+      const claimableReward2: BigNumber[] = await controllerV1.claimableReward(user1.address, [token.address]);
+      await controllerV2.claim(user1.address, [token.address]);
+      const claimableReward3: BigNumber[] = await controllerV2.claimableReward(user1.address, [token.address]);
+      await time.increase(1);
+      const claimableReward4: BigNumber[] = await controllerV2.claimableReward(user1.address, [token.address]);
+      const balance2 = await rewardToken.balanceOf(user1.address);
+      console.log('claimableRewards 1,2', claimableReward1[0].toString(), claimableReward2[0].toString());
+      console.log('claimableRewards 3,4', claimableReward3[0].toString(), claimableReward4[0].toString());
+      console.log('Balances', balance1.toString(), balance2.sub(balance1).toString());
+
+      expect(claimableReward3[0]).to.be.equals(0);
+      expect(balance2.sub(balance1)).to.be.equals(claimableReward4[0]);
+
     });
   });
   describe("MigrationV2", () => {
@@ -537,6 +562,36 @@ describe("IncentivesControllerV2", () => {
       expect(readyToVest1[0]).to.be.equal(readyToVest3[0]);
       expect(readyToVest2[0]).to.be.equal(readyToVest4[0]);
       expect(balance1).to.be.equal(balance2);
+    });
+    it("deposit -> wait 10days -> claimableReward([uToken]) -> migration -> borrow (handleAction) -> wait 10 days -> claimableReward([uToken, debtToken]) -> claim -> wait 10 days -> claimableReward([uToken, debtToken])", async () => {
+      const [, account1] = await ethers.getSigners();
+      const { controllerV1, controllerV2, distributor, rewardToken, rewardTokenHolder } = await loadFixture(incentivesController2Fixture);
+      await rewardToken.connect(rewardTokenHolder).transfer(distributor.address, ethers.utils.parseEther('1000'));
+      const uTokenAddress: string = await controllerV1.registeredTokens(0);
+      const debtTokenAddress: string = await controllerV1.registeredTokens(1);
+      const uToken = await ethers.getContractAt("ERC20", uTokenAddress);
+      const debtToken = await ethers.getContractAt("ERC20", debtTokenAddress);
+      const tokenSigner: SignerWithAddress = await ethers.getImpersonatedSigner(uTokenAddress);
+      const debtTokenSigner: SignerWithAddress = await ethers.getImpersonatedSigner(debtTokenAddress);
+      await ethers.provider.send('hardhat_setBalance', [tokenSigner.address, ethers.utils.parseEther('1000').toHexString()]);
+      await ethers.provider.send('hardhat_setBalance', [debtTokenSigner.address, ethers.utils.parseEther('1000').toHexString()]);
+      const totalSupply: BigNumber = await uToken.totalSupply();
+      const debtTotalSupply: BigNumber = await debtToken.totalSupply();
+      const balanceInWei1: BigNumber = BigNumber.from(10).pow(18).mul(1000);
+      const debtBalanceInWei: BigNumber = BigNumber.from(10).pow(18).mul(500);
+      await controllerV1.connect(tokenSigner).handleAction(account1.address, balanceInWei1, balanceInWei1.add(totalSupply));
+      await time.increase(86400 * 10);
+      const readyToVest1: BigNumber[] = await controllerV1.connect(account1).claimableReward(account1.address, [uToken.address, debtToken.address]);
+      await controllerV2.setup();
+      await controllerV2.connect(debtTokenSigner).handleAction(account1.address, debtBalanceInWei, debtBalanceInWei.add(debtTotalSupply));
+      await time.increase(86400 * 10);
+      const readyToVest2: BigNumber[] = await controllerV2.connect(account1).claimableReward(account1.address, [uToken.address, debtToken.address]);
+      await controllerV2.connect(account1).claim(account1.address, [uToken.address, debtToken.address]);
+      await time.increase(86400 * 5);
+      const readyToVest3: BigNumber[] = await controllerV2.connect(account1).claimableReward(account1.address, [uToken.address, debtToken.address]);
+      console.log('readyToVest 1', readyToVest1);
+      console.log('readyToVest 2', readyToVest2);
+      console.log('readyToVest 3', readyToVest3);
     });
   });
 });

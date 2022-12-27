@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/IMigration.sol";
-import "hardhat/console.sol";
 
 interface IDistributor {
   function updateReward(address account) external;
