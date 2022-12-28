@@ -314,7 +314,7 @@ describe("IncentivesControllerV2", () => {
   //   });
   // });
   describe("Founded bugs after audit", () => {
-    it("Should be executed correctly: deposit v1 -> migration -> wait -> claim -> claim (second claim has no effects)", async () => {
+    it("Should be executed correctly: deposit v1 -> migration -> claim -> claim (second claim has no effects)", async () => {
       const [, user1] = await ethers.getSigners();
       const { controllerV1, controllerV2, distributor, rewardToken, rewardTokenHolder } = await loadFixture(incentivesController2Fixture);
       await rewardToken.connect(rewardTokenHolder).transfer(distributor.address, ethers.utils.parseEther('1000'));
@@ -328,23 +328,21 @@ describe("IncentivesControllerV2", () => {
       await time.increase(86400 * 5);
       await controllerV2.setup();
       await time.increase(86400 * 5);
+      await controllerV2.claim(user1.address, [token.address]);
       const claimableReward1: BigNumber[] = await controllerV2.claimableReward(user1.address, [token.address]);
-      await controllerV2.claim(user1.address, [token.address]);
       const balance1 = await rewardToken.balanceOf(user1.address);
-      console.log('\n');
-      // await time.increase(86400 * 10);
-      const claimableReward2: BigNumber[] = await controllerV1.claimableReward(user1.address, [token.address]);
       await controllerV2.claim(user1.address, [token.address]);
-      const claimableReward3: BigNumber[] = await controllerV2.claimableReward(user1.address, [token.address]);
+      const claimableReward2: BigNumber[] = await controllerV1.claimableReward(user1.address, [token.address]);
       await time.increase(1);
-      const claimableReward4: BigNumber[] = await controllerV2.claimableReward(user1.address, [token.address]);
+      const claimableReward3: BigNumber[] = await controllerV2.claimableReward(user1.address, [token.address]);
       const balance2 = await rewardToken.balanceOf(user1.address);
-      console.log('claimableRewards 1,2', claimableReward1[0].toString(), claimableReward2[0].toString());
-      console.log('claimableRewards 3,4', claimableReward3[0].toString(), claimableReward4[0].toString());
+
+      console.log('claimableRewards', claimableReward1[0].toString(), claimableReward2[0].toString(), claimableReward3[0].toString());
       console.log('Balances', balance1.toString(), balance2.sub(balance1).toString());
 
-      expect(claimableReward3[0]).to.be.equals(0);
-      expect(balance2.sub(balance1)).to.be.equals(claimableReward4[0]);
+      expect(claimableReward1[0]).to.be.equals(0);
+      expect(claimableReward2[0]).to.be.equals(0);
+      expect(balance2.sub(balance1)).to.be.equals(claimableReward3[0]);
     })
   });
 });
